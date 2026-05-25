@@ -6,9 +6,9 @@
 <meta name="mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
-<meta name="apple-mobile-web-app-title" content="Kharch"/>
+<meta name="apple-mobile-web-app-title" content="Finance"/>
 <meta name="theme-color" content="#0f0f0f"/>
-<title>Kharch Tracker</title>
+<title>Finance Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root {
@@ -21,230 +21,363 @@
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overscroll-behavior: none; }
 .app { display: flex; flex-direction: column; height: 100dvh; max-width: 480px; margin: 0 auto; }
 
+/* LOADING */
+.loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100dvh; gap: 16px; }
+.loading-icon { font-size: 48px; animation: pulse 1.5s infinite; }
+.loading-text { font-size: 14px; color: var(--muted); }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+.spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* LOGIN */
+.login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100dvh; padding: 40px 24px; text-align: center; }
+.login-icon { font-size: 56px; margin-bottom: 20px; }
+.login-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+.login-sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.7; }
+.login-btn { display: flex; align-items: center; gap: 10px; background: white; color: #333; border: none; border-radius: 12px; padding: 14px 24px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: opacity 0.15s; }
+.login-btn:active { opacity: 0.8; }
+.login-note { font-size: 11px; color: var(--muted); margin-top: 16px; line-height: 1.6; }
+
 /* HEADER */
 .header { padding: 48px 20px 14px; flex-shrink: 0; }
 .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .app-name { font-size: 13px; font-weight: 500; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
-.sync-btn { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--muted); cursor: pointer; font-family: var(--font); }
-.sync-btn.connected { color: var(--accent); border-color: var(--accent); }
-.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
-.sync-btn.connected .sync-dot { background: var(--accent); }
+.sync-btn { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--muted); cursor: pointer; font-family: var(--font); transition: all 0.2s; }
+.sync-btn.connected { color: var(--accent); border-color: #c8f56444; }
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.mnav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: 32px; height: 32px; color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; }
-.month-name { font-size: 14px; font-weight: 500; min-width: 100px; text-align: center; }
+.mnav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: 34px; height: 34px; color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.mnav-btn:active { background: var(--surface2); }
+.month-name { font-size: 15px; font-weight: 600; min-width: 110px; text-align: center; }
 .total-card { background: var(--accent); border-radius: var(--radius); padding: 18px; color: #0f0f0f; }
-.total-label { font-size: 11px; font-weight: 500; opacity: 0.6; letter-spacing: 0.08em; text-transform: uppercase; }
+.total-label { font-size: 11px; font-weight: 500; opacity: 0.55; letter-spacing: 0.08em; text-transform: uppercase; }
 .total-amount { font-size: 34px; font-weight: 600; font-family: var(--mono); margin: 4px 0 14px; letter-spacing: -0.02em; }
 .mini-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 .mini-stat { background: rgba(0,0,0,0.12); border-radius: 10px; padding: 8px 10px; }
-.mini-stat-label { font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.06em; }
+.mini-stat-label { font-size: 10px; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.06em; }
 .mini-stat-val { font-size: 14px; font-weight: 600; font-family: var(--mono); margin-top: 2px; }
 
 /* TABS */
-.tabs { display: flex; gap: 4px; padding: 10px 20px 0; flex-shrink: 0; }
-.tab { flex: 1; padding: 9px; text-align: center; font-size: 13px; font-weight: 500; color: var(--muted); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; font-family: var(--font); }
+.tabs { display: flex; padding: 10px 20px 0; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+.tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 500; color: var(--muted); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; font-family: var(--font); }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
 /* CONTENT */
-.content { flex: 1; overflow-y: auto; padding: 14px 20px 100px; -webkit-overflow-scrolling: touch; }
+.content { flex: 1; overflow-y: auto; padding: 16px 20px 100px; -webkit-overflow-scrolling: touch; }
 
 /* ADD FORM */
-.add-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 16px; }
-.form-title { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-.form-field { display: flex; flex-direction: column; gap: 4px; }
-.form-field.full { grid-column: 1 / -1; }
-.form-field label { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; }
+.add-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.form-title { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
+.form-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
+.form-field label { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
 .form-field input, .form-field select {
   background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
-  padding: 10px 12px; font-size: 14px; color: var(--text); font-family: var(--font); outline: none;
-  -webkit-appearance: none; appearance: none;
+  padding: 11px 13px; font-size: 15px; color: var(--text); font-family: var(--font); outline: none;
+  -webkit-appearance: none; appearance: none; width: 100%;
 }
-.form-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+.form-field select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px;
+}
 .form-field input:focus, .form-field select:focus { border-color: var(--accent); }
 .form-field input::placeholder { color: var(--muted); }
-.submit-btn { width: 100%; padding: 12px; background: var(--accent); color: #0f0f0f; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: opacity 0.15s; }
+.submit-btn { width: 100%; padding: 13px; background: var(--accent); color: #0f0f0f; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; margin-top: 4px; transition: opacity 0.15s; }
 .submit-btn:active { opacity: 0.8; }
 
 /* LIST */
-.date-group { margin-bottom: 16px; }
-.date-heading { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+.date-group { margin-bottom: 18px; }
+.date-heading { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.date-total { font-family: var(--mono); font-size: 12px; color: var(--text); }
 .exp-item { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 6px; }
-.exp-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: #c8f56415; }
+.exp-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; background: #c8f56415; }
 .exp-info { flex: 1; min-width: 0; }
 .exp-desc { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .exp-cat { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.exp-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.exp-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
 .exp-amt { font-size: 15px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
-.exp-del { background: none; border: none; color: var(--muted); font-size: 15px; cursor: pointer; padding: 2px; }
+.exp-del { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 2px; line-height: 1; }
 .exp-del:active { color: var(--danger); }
 
 /* BREAKDOWN */
-.breakdown-item { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
-.breakdown-icon { font-size: 20px; width: 36px; text-align: center; }
+.breakdown-section { margin-bottom: 24px; }
+.breakdown-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+.breakdown-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.breakdown-icon { font-size: 20px; width: 36px; text-align: center; flex-shrink: 0; }
 .breakdown-info { flex: 1; }
-.breakdown-name { font-size: 13px; font-weight: 500; margin-bottom: 5px; display: flex; justify-content: space-between; }
+.breakdown-name { font-size: 13px; font-weight: 500; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
 .breakdown-name span { font-family: var(--mono); font-size: 12px; color: var(--accent); }
 .breakdown-bar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
 .breakdown-fill { height: 5px; border-radius: 3px; background: var(--accent); transition: width 0.4s; }
 
-/* EMPTY / STATUS */
+/* DAILY BREAKDOWN */
+.day-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; }
+.day-label { font-size: 13px; color: var(--text); }
+.day-amt { font-size: 13px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
+.day-count { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+/* EMPTY */
 .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
 .empty-icon { font-size: 40px; margin-bottom: 12px; }
 .empty-text { font-size: 14px; }
 
-/* LOGIN SCREEN */
-.login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; padding: 40px 24px; text-align: center; }
-.login-icon { font-size: 56px; margin-bottom: 20px; }
-.login-title { font-size: 22px; font-weight: 600; margin-bottom: 8px; }
-.login-sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.6; }
-.login-btn { display: flex; align-items: center; gap: 10px; background: white; color: #333; border: none; border-radius: 12px; padding: 14px 24px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; }
-.login-btn img { width: 20px; height: 20px; }
-.login-note { font-size: 12px; color: var(--muted); margin-top: 16px; }
-
 /* TOAST */
-.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 8px 16px; font-size: 13px; color: var(--text); opacity: 0; transition: opacity 0.3s; pointer-events: none; white-space: nowrap; z-index: 100; }
+.toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 9px 18px; font-size: 13px; color: var(--text); opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; z-index: 200; }
 .toast.show { opacity: 1; }
-.saving-indicator { position: fixed; top: 16px; right: 16px; font-size: 11px; color: var(--muted); opacity: 0; transition: opacity 0.3s; z-index: 100; }
-.saving-indicator.show { opacity: 1; }
 </style>
 </head>
 <body>
 <div id="toast" class="toast"></div>
-<div id="savingIndicator" class="saving-indicator">Saving...</div>
-<div class="app" id="app"></div>
+<div id="root"></div>
 
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 const CLIENT_ID = '861916678896-0qq3sr6qjjcch41daa95e11bimp80gst.apps.googleusercontent.com';
-const SCOPES = 'https://www.googleapis.com/auth/drive.appdata';
-const FILE_NAME = 'kharch_data.json';
+const SCOPE = 'https://www.googleapis.com/auth/drive.file';
+const FILE_NAME = 'finance_data.json';
 
 const CATS = [
-  { name: 'Khaana', emoji: '🍛' },
+  { name: 'Khaana',    emoji: '🍛' },
   { name: 'Transport', emoji: '🚗' },
-  { name: 'Shopping', emoji: '🛍️' },
-  { name: 'Bill', emoji: '💡' },
-  { name: 'Health', emoji: '💊' },
-  { name: 'Business', emoji: '💼' },
-  { name: 'Family', emoji: '👨‍👩‍👧' },
-  { name: 'Other', emoji: '📦' },
+  { name: 'Shopping',  emoji: '🛍️' },
+  { name: 'Bill',      emoji: '💡' },
+  { name: 'Health',    emoji: '💊' },
+  { name: 'Business',  emoji: '💼' },
+  { name: 'Family',    emoji: '👨‍👩‍👧' },
+  { name: 'Other',     emoji: '📦' },
 ];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-let tokenClient, accessToken = null;
-let expenses = [];
-let driveFileId = null;
-let viewY = new Date().getFullYear();
-let viewM = new Date().getMonth();
-let activeTab = 'list';
+let state = {
+  screen: 'loading', // loading | login | app
+  accessToken: null,
+  expenses: [],
+  driveFileId: null,
+  viewY: new Date().getFullYear(),
+  viewM: new Date().getMonth(),
+  activeTab: 'list',
+  saving: false,
+};
 let saveTimer = null;
+let tokenClient = null;
 
 // ── TOAST ──
-function toast(msg, duration=2000) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), duration);
+function toast(msg, dur=2500) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), dur);
 }
 
-function showSaving(on) {
-  document.getElementById('savingIndicator').classList.toggle('show', on);
+// ── RENDER ROOT ──
+function render() {
+  const root = document.getElementById('root');
+  if (state.screen === 'loading') {
+    root.innerHTML = `<div class="loading-screen"><div class="loading-icon">💰</div><div class="spinner"></div><div class="loading-text">Loading...</div></div>`;
+  } else if (state.screen === 'login') {
+    root.innerHTML = `<div class="login-screen">
+      <div class="login-icon">💰</div>
+      <div class="login-title">Finance Tracker</div>
+      <div class="login-sub">Apna daily kharch track karo.<br/>Data tumhari Google Drive mein safe rahega.</div>
+      <button class="login-btn" onclick="signIn()">
+        <img src="https://www.google.com/favicon.ico" width="20" height="20"/> Google se Login Karo
+      </button>
+      <div class="login-note">Sirf ek JSON file banegi tumhari Drive mein.<br/>Koi aur data access nahi hoga.</div>
+    </div>`;
+  } else {
+    renderApp(root);
+  }
 }
 
-// ── AUTH ──
-function initGoogleAuth() {
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPES,
-    callback: async (resp) => {
-      if (resp.error) { toast('Login failed ❌'); return; }
-      accessToken = resp.access_token;
-      localStorage.setItem('kharch_token', accessToken);
-      toast('Connected! Loading data... ⏳');
-      await loadFromDrive();
-      renderApp();
-    }
-  });
+// ── APP SHELL ──
+function renderApp(root) {
+  const list = monthExp();
+  const total = list.reduce((s,e)=>s+e.amount, 0);
+  const todayTotal = list.filter(e=>e.date===todayStr()).reduce((s,e)=>s+e.amount, 0);
+  const daysInMonth = new Date(state.viewY, state.viewM+1, 0).getDate();
+  const now = new Date();
+  const passed = (state.viewY===now.getFullYear()&&state.viewM===now.getMonth()) ? now.getDate() : daysInMonth;
+  const avg = passed>0 ? total/passed : 0;
+
+  root.innerHTML = `
+  <div class="app">
+    <div class="header">
+      <div class="header-top">
+        <span class="app-name">Finance Tracker</span>
+        <button class="sync-btn connected" onclick="manualSync()">
+          <span class="sync-dot"></span>${state.saving ? 'Saving...' : 'Drive Sync'}
+        </button>
+      </div>
+      <div class="month-nav">
+        <button class="mnav-btn" onclick="changeMonth(-1)">&#8249;</button>
+        <span class="month-name">${MONTHS[state.viewM]} ${state.viewY}</span>
+        <button class="mnav-btn" onclick="changeMonth(1)">&#8250;</button>
+      </div>
+      <div class="total-card">
+        <div class="total-label">Is Mahine Ka Kharch</div>
+        <div class="total-amount">${fmt(total)}</div>
+        <div class="mini-stats">
+          <div class="mini-stat"><div class="mini-stat-label">Aaj</div><div class="mini-stat-val">${fmtS(todayTotal)}</div></div>
+          <div class="mini-stat"><div class="mini-stat-label">Avg/Din</div><div class="mini-stat-val">${fmtS(avg)}</div></div>
+          <div class="mini-stat"><div class="mini-stat-label">Entries</div><div class="mini-stat-val">${list.length}</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab ${state.activeTab==='list'?'active':''}" onclick="setTab('list')">📋 List</button>
+      <button class="tab ${state.activeTab==='add'?'active':''}" onclick="setTab('add')">＋ Add</button>
+      <button class="tab ${state.activeTab==='breakdown'?'active':''}" onclick="setTab('breakdown')">📊 Stats</button>
+    </div>
+    <div class="content" id="content"></div>
+  </div>`;
+
+  renderTab();
 }
 
-function signIn() {
-  tokenClient.requestAccessToken({ prompt: 'consent' });
+function renderTab() {
+  const c = document.getElementById('content');
+  if (!c) return;
+  if (state.activeTab==='list') renderList(c);
+  else if (state.activeTab==='add') renderAdd(c);
+  else renderBreakdown(c);
 }
 
-function signOut() {
-  if (accessToken) google.accounts.oauth2.revoke(accessToken);
-  accessToken = null;
-  driveFileId = null;
-  expenses = [];
-  localStorage.removeItem('kharch_token');
-  toast('Signed out');
-  renderApp();
+// ── LIST ──
+function renderList(c) {
+  const list = monthExp().sort((a,b) => b.date.localeCompare(a.date) || b.id-a.id);
+  if (!list.length) {
+    c.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Is mahine koi kharch nahi</div></div>`;
+    return;
+  }
+  const groups = {};
+  list.forEach(e => { if(!groups[e.date]) groups[e.date]=[]; groups[e.date].push(e); });
+  c.innerHTML = Object.entries(groups).map(([date, items]) => {
+    const d = new Date(date+'T00:00:00');
+    const now = new Date(); now.setHours(0,0,0,0);
+    const diff = Math.round((now-d)/86400000);
+    const label = diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
+    const dayTotal = items.reduce((s,e)=>s+e.amount,0);
+    return `<div class="date-group">
+      <div class="date-heading"><span>${label}</span><span class="date-total">${fmt(dayTotal)}</span></div>
+      ${items.map(e => {
+        const cat = CATS.find(c=>c.name===e.cat)||CATS[7];
+        return `<div class="exp-item">
+          <div class="exp-icon">${cat.emoji}</div>
+          <div class="exp-info">
+            <div class="exp-desc">${escHtml(e.desc)}</div>
+            <div class="exp-cat">${e.cat}</div>
+          </div>
+          <div class="exp-right">
+            <span class="exp-amt">${fmt(e.amount)}</span>
+            <button class="exp-del" onclick="deleteExp(${e.id})">✕</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }).join('');
 }
 
-// ── DRIVE API ──
-async function driveRequest(url, options={}) {
-  const resp = await fetch(url, {
-    ...options,
-    headers: { 'Authorization': `Bearer ${accessToken}`, ...(options.headers||{}) }
-  });
-  if (resp.status === 401) { accessToken = null; localStorage.removeItem('kharch_token'); renderApp(); return null; }
-  return resp;
+// ── ADD ──
+function renderAdd(c) {
+  const opts = CATS.map(c=>`<option value="${c.name}">${c.emoji} ${c.name}</option>`).join('');
+  c.innerHTML = `<div class="add-form">
+    <div class="form-title">Naya Kharch Add Karo</div>
+    <div class="form-field"><label>Kya tha?</label>
+      <input type="text" id="f-desc" placeholder="e.g. Lunch, Petrol, Medicine" autocomplete="off"/></div>
+    <div class="form-field"><label>Amount (Rs)</label>
+      <input type="number" id="f-amt" placeholder="0" inputmode="numeric"/></div>
+    <div class="form-field"><label>Category</label>
+      <select id="f-cat">${opts}</select></div>
+    <button class="submit-btn" onclick="addExpense()">✓ Kharch Add Karo</button>
+  </div>`;
+  setTimeout(()=>document.getElementById('f-desc')?.focus(), 100);
+  document.getElementById('f-amt')?.addEventListener('keydown', e=>{ if(e.key==='Enter') addExpense(); });
 }
 
-async function findFile() {
-  const r = await driveRequest(
-    `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${FILE_NAME}'&fields=files(id,name)`
-  );
-  if (!r) return null;
-  const d = await r.json();
-  return d.files && d.files.length > 0 ? d.files[0].id : null;
+// ── BREAKDOWN ──
+function renderBreakdown(c) {
+  const list = monthExp();
+  if (!list.length) {
+    c.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Koi data nahi is mahine</div></div>`;
+    return;
+  }
+
+  // Category totals
+  const catTotals = {};
+  list.forEach(e => catTotals[e.cat]=(catTotals[e.cat]||0)+e.amount);
+  const sortedCats = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
+  const maxCat = sortedCats[0][1];
+
+  // Daily totals
+  const dayTotals = {};
+  list.forEach(e => dayTotals[e.date]=(dayTotals[e.date]||0)+e.amount);
+  const sortedDays = Object.entries(dayTotals).sort((a,b)=>b[0].localeCompare(a[0]));
+
+  c.innerHTML = `
+    <div class="breakdown-section">
+      <div class="breakdown-title">Category Se</div>
+      ${sortedCats.map(([cat,amt])=>{
+        const cv = CATS.find(x=>x.name===cat)||CATS[7];
+        return `<div class="breakdown-item">
+          <div class="breakdown-icon">${cv.emoji}</div>
+          <div class="breakdown-info">
+            <div class="breakdown-name">${cat}<span>${fmt(amt)}</span></div>
+            <div class="breakdown-bar"><div class="breakdown-fill" style="width:${Math.round(amt/maxCat*100)}%"></div></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+    <div class="breakdown-section">
+      <div class="breakdown-title">Din Ke Hisaab Se</div>
+      ${sortedDays.map(([date, amt])=>{
+        const d = new Date(date+'T00:00:00');
+        const now = new Date(); now.setHours(0,0,0,0);
+        const diff = Math.round((now-d)/86400000);
+        const label = diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
+        const count = list.filter(e=>e.date===date).length;
+        return `<div class="day-item">
+          <div><div class="day-label">${label}</div><div class="day-count">${count} entr${count===1?'y':'ies'}</div></div>
+          <div class="day-amt">${fmt(amt)}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
 }
 
-async function loadFromDrive() {
-  try {
-    driveFileId = await findFile();
-    if (!driveFileId) { expenses = []; return; }
-    const r = await driveRequest(
-      `https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`
-    );
-    if (!r) return;
-    const d = await r.json();
-    expenses = Array.isArray(d) ? d : [];
-    toast('Data load ho gaya ✅');
-  } catch(e) { expenses = []; }
+// ── ACTIONS ──
+function setTab(tab) {
+  state.activeTab = tab;
+  render();
 }
 
-async function saveToDrive() {
-  if (!accessToken) return;
-  showSaving(true);
-  try {
-    const body = JSON.stringify(expenses);
-    if (!driveFileId) {
-      // create
-      const meta = { name: FILE_NAME, parents: ['appDataFolder'] };
-      const form = new FormData();
-      form.append('metadata', new Blob([JSON.stringify(meta)], {type:'application/json'}));
-      form.append('file', new Blob([body], {type:'application/json'}));
-      const r = await driveRequest(
-        'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-        { method: 'POST', body: form }
-      );
-      if (r) { const d = await r.json(); driveFileId = d.id; }
-    } else {
-      // update
-      await driveRequest(
-        `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
-        { method: 'PATCH', headers: {'Content-Type':'application/json'}, body }
-      );
-    }
-  } catch(e) { toast('Save failed ❌'); }
-  showSaving(false);
+function changeMonth(dir) {
+  state.viewM += dir;
+  if (state.viewM<0) { state.viewM=11; state.viewY--; }
+  if (state.viewM>11) { state.viewM=0; state.viewY++; }
+  render();
 }
 
-function scheduleSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => saveToDrive(), 1500);
+function addExpense() {
+  const desc = document.getElementById('f-desc')?.value.trim();
+  const amt = parseFloat(document.getElementById('f-amt')?.value);
+  const cat = document.getElementById('f-cat')?.value;
+  if (!desc||isNaN(amt)||amt<=0) { toast('Description aur amount daalo ⚠️'); return; }
+  state.expenses.push({ id: Date.now(), desc, amount: amt, cat, date: todayStr() });
+  state.activeTab = 'list';
+  scheduleSave();
+  render();
+  toast('Kharch add ho gaya ✅');
+}
+
+function deleteExp(id) {
+  if (!confirm('Yeh entry delete karein?')) return;
+  state.expenses = state.expenses.filter(e=>e.id!==id);
+  scheduleSave();
+  render();
+}
+
+async function manualSync() {
+  toast('Syncing... ⏳');
+  await saveToDrive();
+  toast('Sync complete ✅');
 }
 
 // ── HELPERS ──
@@ -255,210 +388,140 @@ function todayStr() {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
 function monthExp() {
-  return expenses.filter(e => {
+  return state.expenses.filter(e => {
     const [y,m] = e.date.split('-').map(Number);
-    return y===viewY && m===viewM+1;
+    return y===state.viewY && m===state.viewM+1;
   });
 }
+function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── RENDER ──
-function renderApp() {
-  const app = document.getElementById('app');
-  if (!accessToken) { app.innerHTML = loginScreen(); return; }
-  app.innerHTML = `
-    <div class="header">
-      <div class="header-top">
-        <span class="app-name">Kharch</span>
-        <button class="sync-btn connected" onclick="syncNow()">
-          <span class="sync-dot"></span> Drive Connected
-        </button>
-      </div>
-      <div class="month-nav">
-        <button class="mnav-btn" onclick="changeMonth(-1)">&#8249;</button>
-        <span class="month-name" id="monthName"></span>
-        <button class="mnav-btn" onclick="changeMonth(1)">&#8250;</button>
-      </div>
-      <div class="total-card">
-        <div class="total-label">Is Mahine Ka Kharch</div>
-        <div class="total-amount" id="totalAmt">Rs 0</div>
-        <div class="mini-stats">
-          <div class="mini-stat"><div class="mini-stat-label">Aaj</div><div class="mini-stat-val" id="todayAmt">0</div></div>
-          <div class="mini-stat"><div class="mini-stat-label">Avg/Din</div><div class="mini-stat-val" id="avgAmt">0</div></div>
-          <div class="mini-stat"><div class="mini-stat-label">Entries</div><div class="mini-stat-val" id="entryCount">0</div></div>
-        </div>
-      </div>
-    </div>
-    <div class="tabs">
-      <button class="tab ${activeTab==='list'?'active':''}" onclick="switchTab('list',this)">List</button>
-      <button class="tab ${activeTab==='add'?'active':''}" onclick="switchTab('add',this)">+ Add</button>
-      <button class="tab ${activeTab==='breakdown'?'active':''}" onclick="switchTab('breakdown',this)">Breakdown</button>
-    </div>
-    <div class="content" id="content"></div>
-  `;
-  updateHeader();
-  renderTab();
+// ── DRIVE ──
+async function apiCall(url, opts={}) {
+  const res = await fetch(url, {
+    ...opts,
+    headers: { 'Authorization': `Bearer ${state.accessToken}`, ...(opts.headers||{}) }
+  });
+  if (res.status === 401) {
+    state.accessToken = null;
+    localStorage.removeItem('finance_token');
+    state.screen = 'login';
+    render();
+    return null;
+  }
+  return res;
 }
 
-function loginScreen() {
-  return `<div class="login-screen">
-    <div class="login-icon">💰</div>
-    <div class="login-title">Kharch Tracker</div>
-    <div class="login-sub">Apna daily kharch track karo.<br/>Data Google Drive mein safe rahega.</div>
-    <button class="login-btn" onclick="signIn()">
-      <img src="https://www.google.com/favicon.ico"/> Google se Login Karo
-    </button>
-    <div class="login-note">Sirf Drive mein ek file banegi — koi aur access nahi</div>
-  </div>`;
+async function findOrCreateFile() {
+  // Search for existing file
+  const r = await apiCall(
+    `https://www.googleapis.com/drive/v3/files?q=name='${FILE_NAME}' and trashed=false&fields=files(id,name)&spaces=drive`
+  );
+  if (!r) return null;
+  const d = await r.json();
+  if (d.files && d.files.length > 0) {
+    state.driveFileId = d.files[0].id;
+    return state.driveFileId;
+  }
+  // Create new file
+  const meta = { name: FILE_NAME, mimeType: 'application/json' };
+  const form = new FormData();
+  form.append('metadata', new Blob([JSON.stringify(meta)], {type:'application/json'}));
+  form.append('file', new Blob(['[]'], {type:'application/json'}));
+  const cr = await apiCall(
+    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+    { method: 'POST', body: form }
+  );
+  if (!cr) return null;
+  const cd = await cr.json();
+  state.driveFileId = cd.id;
+  return state.driveFileId;
 }
 
-function updateHeader() {
-  if (!document.getElementById('monthName')) return;
-  document.getElementById('monthName').textContent = MONTHS[viewM].slice(0,3)+' '+viewY;
-  const list = monthExp();
-  const total = list.reduce((s,e)=>s+e.amount,0);
-  const today = list.filter(e=>e.date===todayStr()).reduce((s,e)=>s+e.amount,0);
-  const days = new Date(viewY,viewM+1,0).getDate();
-  const now = new Date();
-  const passed = (viewY===now.getFullYear()&&viewM===now.getMonth()) ? now.getDate() : days;
-  document.getElementById('totalAmt').textContent = fmt(total);
-  document.getElementById('todayAmt').textContent = fmtS(today);
-  document.getElementById('avgAmt').textContent = fmtS(passed>0?total/passed:0);
-  document.getElementById('entryCount').textContent = list.length;
-}
-
-function changeMonth(d) {
-  viewM+=d;
-  if(viewM<0){viewM=11;viewY--;}
-  if(viewM>11){viewM=0;viewY++;}
-  updateHeader(); renderTab();
-}
-
-function switchTab(tab, btn) {
-  activeTab=tab;
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  btn.classList.add('active');
-  renderTab();
-}
-
-function renderTab() {
-  if(activeTab==='list') renderList();
-  else if(activeTab==='add') renderAdd();
-  else renderBreakdown();
-}
-
-function renderList() {
-  const list = monthExp().sort((a,b)=>b.date.localeCompare(a.date)||(b.id-a.id));
-  const c = document.getElementById('content');
-  if(!c) return;
-  if(!list.length) { c.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Is mahine koi kharch nahi</div></div>`; return; }
-  const groups={};
-  list.forEach(e=>{ if(!groups[e.date]) groups[e.date]=[]; groups[e.date].push(e); });
-  c.innerHTML = Object.entries(groups).map(([date,items])=>{
-    const d=new Date(date), today=new Date(); today.setHours(0,0,0,0); d.setHours(0,0,0,0);
-    const diff=Math.round((today-d)/86400000);
-    const label=diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
-    return `<div class="date-group"><div class="date-heading">${label}</div>${
-      items.map(e=>{
-        const cat=CATS.find(c=>c.name===e.cat)||CATS[7];
-        return `<div class="exp-item">
-          <div class="exp-icon">${cat.emoji}</div>
-          <div class="exp-info"><div class="exp-desc">${e.desc}</div><div class="exp-cat">${e.cat}</div></div>
-          <div class="exp-right">
-            <span class="exp-amt">${fmt(e.amount)}</span>
-            <button class="exp-del" onclick="deleteExp(${e.id})">✕</button>
-          </div>
-        </div>`;
-      }).join('')
-    }</div>`;
-  }).join('');
-}
-
-function renderAdd() {
-  const opts = CATS.map(c=>`<option value="${c.name}">${c.emoji} ${c.name}</option>`).join('');
-  document.getElementById('content').innerHTML = `
-    <div class="add-form">
-      <div class="form-title">Naya Kharch</div>
-      <div class="form-grid">
-        <div class="form-field full"><label>Kya tha?</label>
-          <input type="text" id="f-desc" placeholder="e.g. Lunch, Petrol..." autocomplete="off"/></div>
-        <div class="form-field"><label>Amount (Rs)</label>
-          <input type="number" id="f-amt" placeholder="0" inputmode="numeric"/></div>
-        <div class="form-field"><label>Category</label>
-          <select id="f-cat">${opts}</select></div>
-      </div>
-      <button class="submit-btn" onclick="addExpense()">Kharch Add Karo ✓</button>
-    </div>`;
-  document.getElementById('f-desc').focus();
-  document.getElementById('f-amt').addEventListener('keydown',e=>{ if(e.key==='Enter') addExpense(); });
-}
-
-function renderBreakdown() {
-  const list = monthExp();
-  const c = document.getElementById('content');
-  if(!list.length) { c.innerHTML=`<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Koi data nahi abhi</div></div>`; return; }
-  const totals={};
-  list.forEach(e=>totals[e.cat]=(totals[e.cat]||0)+e.amount);
-  const sorted=Object.entries(totals).sort((a,b)=>b[1]-a[1]);
-  const max=sorted[0][1];
-  c.innerHTML=sorted.map(([cat,amt])=>{
-    const cv=CATS.find(x=>x.name===cat)||CATS[7];
-    return `<div class="breakdown-item">
-      <div class="breakdown-icon">${cv.emoji}</div>
-      <div class="breakdown-info">
-        <div class="breakdown-name">${cat}<span>${fmt(amt)}</span></div>
-        <div class="breakdown-bar"><div class="breakdown-fill" style="width:${Math.round(amt/max*100)}%"></div></div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function addExpense() {
-  const desc=document.getElementById('f-desc').value.trim();
-  const amt=parseFloat(document.getElementById('f-amt').value);
-  const cat=document.getElementById('f-cat').value;
-  if(!desc||isNaN(amt)||amt<=0) { document.getElementById('f-desc').focus(); return; }
-  expenses.push({ id: Date.now(), desc, amount: amt, cat, date: todayStr() });
-  scheduleSave();
-  updateHeader();
-  activeTab='list';
-  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===0));
-  renderList();
-  toast('Kharch add ho gaya ✅');
-}
-
-function deleteExp(id) {
-  if(!confirm('Delete karein?')) return;
-  expenses=expenses.filter(e=>e.id!==id);
-  scheduleSave();
-  updateHeader();
-  renderList();
-}
-
-async function syncNow() {
-  toast('Syncing... ⏳');
-  await saveToDrive();
-  toast('Sync complete ✅');
-}
-
-// ── INIT ──
-window.addEventListener('load', () => {
-  // Wait for Google script then init
-  const tryInit = () => {
-    if (typeof google !== 'undefined' && google.accounts) {
-      initGoogleAuth();
-      const saved = localStorage.getItem('kharch_token');
-      if (saved) {
-        accessToken = saved;
-        loadFromDrive().then(() => renderApp());
-      } else {
-        renderApp();
-      }
+async function loadFromDrive() {
+  try {
+    const fileId = await findOrCreateFile();
+    if (!fileId) return;
+    const r = await apiCall(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`);
+    if (!r) return;
+    const text = await r.text();
+    if (text && text.trim().startsWith('[')) {
+      state.expenses = JSON.parse(text);
     } else {
-      setTimeout(tryInit, 200);
+      state.expenses = [];
     }
-  };
-  tryInit();
-});
+  } catch(e) {
+    state.expenses = [];
+  }
+}
+
+async function saveToDrive() {
+  if (!state.accessToken) return;
+  state.saving = true;
+  try {
+    if (!state.driveFileId) await findOrCreateFile();
+    if (!state.driveFileId) return;
+    const body = JSON.stringify(state.expenses);
+    await apiCall(
+      `https://www.googleapis.com/upload/drive/v3/files/${state.driveFileId}?uploadType=media`,
+      { method: 'PATCH', headers: {'Content-Type':'application/json'}, body }
+    );
+  } catch(e) { toast('Save failed ❌'); }
+  state.saving = false;
+}
+
+function scheduleSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => saveToDrive(), 1500);
+}
+
+// ── AUTH ──
+function signIn() {
+  if (!tokenClient) { toast('Google load ho raha hai, thoda wait karo...'); return; }
+  tokenClient.requestAccessToken({ prompt: 'consent' });
+}
+
+function initAuth() {
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPE,
+    callback: async (resp) => {
+      if (resp.error) { toast('Login failed ❌'); return; }
+      state.accessToken = resp.access_token;
+      localStorage.setItem('finance_token', resp.access_token);
+      state.screen = 'loading';
+      render();
+      await loadFromDrive();
+      state.screen = 'app';
+      render();
+      toast('Connected! Data load ho gaya ✅');
+    }
+  });
+
+  // Try saved token
+  const saved = localStorage.getItem('finance_token');
+  if (saved) {
+    state.accessToken = saved;
+    loadFromDrive().then(() => {
+      state.screen = 'app';
+      render();
+    }).catch(() => {
+      state.screen = 'login';
+      render();
+    });
+  } else {
+    state.screen = 'login';
+    render();
+  }
+}
+
+// ── BOOT ──
+render(); // show loading first
+const waitForGoogle = setInterval(() => {
+  if (typeof google !== 'undefined' && google.accounts) {
+    clearInterval(waitForGoogle);
+    initAuth();
+  }
+}, 200);
 </script>
 </body>
 </html>
