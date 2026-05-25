@@ -21,7 +21,6 @@
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: var(--font); overscroll-behavior: none; }
 .app { display: flex; flex-direction: column; height: 100dvh; max-width: 480px; margin: 0 auto; }
 
-/* LOADING */
 .loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100dvh; gap: 16px; }
 .loading-icon { font-size: 48px; animation: pulse 1.5s infinite; }
 .loading-text { font-size: 14px; color: var(--muted); }
@@ -29,25 +28,21 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* LOGIN */
 .login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100dvh; padding: 40px 24px; text-align: center; }
 .login-icon { font-size: 56px; margin-bottom: 20px; }
 .login-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
 .login-sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.7; }
-.login-btn { display: flex; align-items: center; gap: 10px; background: white; color: #333; border: none; border-radius: 12px; padding: 14px 24px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; transition: opacity 0.15s; }
-.login-btn:active { opacity: 0.8; }
+.login-btn { display: flex; align-items: center; gap: 10px; background: white; color: #333; border: none; border-radius: 12px; padding: 14px 24px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; }
 .login-note { font-size: 11px; color: var(--muted); margin-top: 16px; line-height: 1.6; }
 
-/* HEADER */
 .header { padding: 48px 20px 14px; flex-shrink: 0; }
 .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .app-name { font-size: 13px; font-weight: 500; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
-.sync-btn { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--muted); cursor: pointer; font-family: var(--font); transition: all 0.2s; }
+.sync-btn { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--muted); cursor: pointer; font-family: var(--font); }
 .sync-btn.connected { color: var(--accent); border-color: #c8f56444; }
 .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .mnav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: 34px; height: 34px; color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-.mnav-btn:active { background: var(--surface2); }
 .month-name { font-size: 15px; font-weight: 600; min-width: 110px; text-align: center; }
 .total-card { background: var(--accent); border-radius: var(--radius); padding: 18px; color: #0f0f0f; }
 .total-label { font-size: 11px; font-weight: 500; opacity: 0.55; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -57,36 +52,25 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .mini-stat-label { font-size: 10px; opacity: 0.55; text-transform: uppercase; letter-spacing: 0.06em; }
 .mini-stat-val { font-size: 14px; font-weight: 600; font-family: var(--mono); margin-top: 2px; }
 
-/* TABS */
 .tabs { display: flex; padding: 10px 20px 0; flex-shrink: 0; border-bottom: 1px solid var(--border); }
 .tab { flex: 1; padding: 10px; text-align: center; font-size: 13px; font-weight: 500; color: var(--muted); background: none; border: none; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color 0.15s, border-color 0.15s; font-family: var(--font); }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-/* CONTENT */
 .content { flex: 1; overflow-y: auto; padding: 16px 20px 100px; -webkit-overflow-scrolling: touch; }
 
-/* ADD FORM */
 .add-form { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
 .form-title { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 14px; }
 .form-field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; }
 .form-field label { font-size: 11px; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
-.form-field input, .form-field select {
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 10px;
-  padding: 11px 13px; font-size: 15px; color: var(--text); font-family: var(--font); outline: none;
-  -webkit-appearance: none; appearance: none; width: 100%;
-}
-.form-field select {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px;
-}
+.form-field input, .form-field select { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; font-size: 15px; color: var(--text); font-family: var(--font); outline: none; -webkit-appearance: none; appearance: none; width: 100%; }
+.form-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px; }
 .form-field input:focus, .form-field select:focus { border-color: var(--accent); }
 .form-field input::placeholder { color: var(--muted); }
 .submit-btn { width: 100%; padding: 13px; background: var(--accent); color: #0f0f0f; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; margin-top: 4px; transition: opacity 0.15s; }
 .submit-btn:active { opacity: 0.8; }
 
-/* LIST */
 .date-group { margin-bottom: 18px; }
-.date-heading { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+.date-heading { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: flex; justify-content: space-between; }
 .date-total { font-family: var(--mono); font-size: 12px; color: var(--text); }
 .exp-item { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 6px; }
 .exp-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; background: #c8f56415; }
@@ -95,32 +79,27 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .exp-cat { font-size: 11px; color: var(--muted); margin-top: 2px; }
 .exp-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
 .exp-amt { font-size: 15px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
-.exp-del { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 2px; line-height: 1; }
+.exp-del { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 2px; }
 .exp-del:active { color: var(--danger); }
 
-/* BREAKDOWN */
 .breakdown-section { margin-bottom: 24px; }
 .breakdown-title { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
 .breakdown-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .breakdown-icon { font-size: 20px; width: 36px; text-align: center; flex-shrink: 0; }
 .breakdown-info { flex: 1; }
-.breakdown-name { font-size: 13px; font-weight: 500; margin-bottom: 5px; display: flex; justify-content: space-between; align-items: center; }
+.breakdown-name { font-size: 13px; font-weight: 500; margin-bottom: 5px; display: flex; justify-content: space-between; }
 .breakdown-name span { font-family: var(--mono); font-size: 12px; color: var(--accent); }
 .breakdown-bar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
-.breakdown-fill { height: 5px; border-radius: 3px; background: var(--accent); transition: width 0.4s; }
-
-/* DAILY BREAKDOWN */
+.breakdown-fill { height: 5px; border-radius: 3px; background: var(--accent); }
 .day-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; }
 .day-label { font-size: 13px; color: var(--text); }
 .day-amt { font-size: 13px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
 .day-count { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
-/* EMPTY */
 .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
 .empty-icon { font-size: 40px; margin-bottom: 12px; }
 .empty-text { font-size: 14px; }
 
-/* TOAST */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 9px 18px; font-size: 13px; color: var(--text); opacity: 0; transition: opacity 0.25s; pointer-events: none; white-space: nowrap; z-index: 200; }
 .toast.show { opacity: 1; }
 </style>
@@ -128,144 +107,236 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <body>
 <div id="toast" class="toast"></div>
 <div id="root"></div>
-
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
 const CLIENT_ID = '861916678896-0qq3sr6qjjcch41daa95e11bimp80gst.apps.googleusercontent.com';
-const SCOPE = 'https://www.googleapis.com/auth/drive.file';
-const FILE_NAME = 'finance_data.json';
+const SHEET_ID  = '1sEY6vT5nlQ24R3JUq_qJgENO4M4ZVv-CE57EGqToems';
+const SCOPE     = 'https://www.googleapis.com/auth/spreadsheets';
+const SHEET_NAME = 'Sheet1';
 
 const CATS = [
-  { name: 'Khaana',    emoji: '🍛' },
-  { name: 'Transport', emoji: '🚗' },
-  { name: 'Shopping',  emoji: '🛍️' },
-  { name: 'Bill',      emoji: '💡' },
-  { name: 'Health',    emoji: '💊' },
-  { name: 'Business',  emoji: '💼' },
-  { name: 'Family',    emoji: '👨‍👩‍👧' },
-  { name: 'Other',     emoji: '📦' },
+  {name:'Khaana',emoji:'🍛'},{name:'Transport',emoji:'🚗'},
+  {name:'Shopping',emoji:'🛍️'},{name:'Bill',emoji:'💡'},
+  {name:'Health',emoji:'💊'},{name:'Business',emoji:'💼'},
+  {name:'Family',emoji:'👨‍👩‍👧'},{name:'Other',emoji:'📦'},
 ];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-let state = {
-  screen: 'loading', // loading | login | app
-  accessToken: null,
-  expenses: [],
-  driveFileId: null,
-  viewY: new Date().getFullYear(),
-  viewM: new Date().getMonth(),
-  activeTab: 'list',
-  saving: false,
-};
-let saveTimer = null;
 let tokenClient = null;
+let accessToken = null;
+let expenses = [];  // [{id, date, desc, cat, amount}]
+let viewY = new Date().getFullYear();
+let viewM = new Date().getMonth();
+let activeTab = 'list';
+let saveTimer = null;
+let isSaving = false;
 
 // ── TOAST ──
 function toast(msg, dur=2500) {
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.classList.add('show');
-  setTimeout(() => el.classList.remove('show'), dur);
+  setTimeout(()=>el.classList.remove('show'), dur);
 }
 
-// ── RENDER ROOT ──
-function render() {
-  const root = document.getElementById('root');
-  if (state.screen === 'loading') {
-    root.innerHTML = `<div class="loading-screen"><div class="loading-icon">💰</div><div class="spinner"></div><div class="loading-text">Loading...</div></div>`;
-  } else if (state.screen === 'login') {
-    root.innerHTML = `<div class="login-screen">
-      <div class="login-icon">💰</div>
-      <div class="login-title">Finance Tracker</div>
-      <div class="login-sub">Apna daily kharch track karo.<br/>Data tumhari Google Drive mein safe rahega.</div>
-      <button class="login-btn" onclick="signIn()">
-        <img src="https://www.google.com/favicon.ico" width="20" height="20"/> Google se Login Karo
-      </button>
-      <div class="login-note">Sirf ek JSON file banegi tumhari Drive mein.<br/>Koi aur data access nahi hoga.</div>
-    </div>`;
-  } else {
-    renderApp(root);
+// ── HELPERS ──
+function fmt(n)  { return 'Rs\u00A0' + Math.round(n).toLocaleString(); }
+function fmtS(n) { return Math.round(n).toLocaleString(); }
+function todayStr() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function monthExp() {
+  return expenses.filter(e => {
+    const [y,m] = e.date.split('-').map(Number);
+    return y===viewY && m===viewM+1;
+  });
+}
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── SHEETS API ──
+async function sheetsRequest(url, opts={}) {
+  const res = await fetch(url, {
+    ...opts,
+    headers: {'Authorization':`Bearer ${accessToken}`, 'Content-Type':'application/json', ...(opts.headers||{})}
+  });
+  if (res.status === 401) {
+    accessToken = null;
+    localStorage.removeItem('fin_token');
+    showLogin();
+    return null;
+  }
+  return res;
+}
+
+// Initialize sheet headers if empty
+async function initSheet() {
+  const r = await sheetsRequest(
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A1:E1`
+  );
+  if (!r) return;
+  const d = await r.json();
+  if (!d.values || d.values.length === 0) {
+    // Write headers
+    await sheetsRequest(
+      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A1:E1?valueInputOption=RAW`,
+      { method: 'PUT', body: JSON.stringify({ values: [['ID','Date','Description','Category','Amount']] }) }
+    );
   }
 }
 
-// ── APP SHELL ──
-function renderApp(root) {
+// Load all rows from sheet
+async function loadFromSheet() {
+  const r = await sheetsRequest(
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:E`
+  );
+  if (!r) return;
+  const d = await r.json();
+  if (!d.values) { expenses = []; return; }
+  expenses = d.values
+    .filter(row => row.length >= 5 && row[0])
+    .map(row => ({
+      id:     Number(row[0]),
+      date:   row[1],
+      desc:   row[2],
+      cat:    row[3],
+      amount: parseFloat(row[4]) || 0,
+    }));
+}
+
+// Append a single new row
+async function appendRow(exp) {
+  await sheetsRequest(
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A:E:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
+    { method: 'POST', body: JSON.stringify({ values: [[exp.id, exp.date, exp.desc, exp.cat, exp.amount]] }) }
+  );
+}
+
+// Delete a row by finding matching ID
+async function deleteRowById(id) {
+  // Get all rows to find row index
+  const r = await sheetsRequest(
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A:A`
+  );
+  if (!r) return;
+  const d = await r.json();
+  if (!d.values) return;
+  const rowIndex = d.values.findIndex(row => Number(row[0]) === id);
+  if (rowIndex < 1) return; // 0 is header
+
+  // Get spreadsheet metadata for sheetId
+  const metaR = await sheetsRequest(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`);
+  if (!metaR) return;
+  const meta = await metaR.json();
+  const sheetId = meta.sheets[0].properties.sheetId;
+
+  // Delete the row
+  await sheetsRequest(
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
+    { method: 'POST', body: JSON.stringify({
+      requests: [{
+        deleteDimension: {
+          range: { sheetId, dimension: 'ROWS', startIndex: rowIndex, endIndex: rowIndex+1 }
+        }
+      }]
+    })}
+  );
+}
+
+// ── RENDER ──
+function showLoading(msg='Loading...') {
+  document.getElementById('root').innerHTML = `
+    <div class="loading-screen">
+      <div class="loading-icon">💰</div>
+      <div class="spinner"></div>
+      <div class="loading-text">${msg}</div>
+    </div>`;
+}
+
+function showLogin() {
+  document.getElementById('root').innerHTML = `
+    <div class="login-screen">
+      <div class="login-icon">💰</div>
+      <div class="login-title">Finance Tracker</div>
+      <div class="login-sub">Apna daily kharch track karo.<br/>Data tumhari Google Sheets mein save hoga.</div>
+      <button class="login-btn" onclick="signIn()">
+        <img src="https://www.google.com/favicon.ico" width="20" height="20"/> Google se Login Karo
+      </button>
+      <div class="login-note">Sirf tumhari Finance Data sheet access hogi.<br/>Koi aur data nahi dekha jayega.</div>
+    </div>`;
+}
+
+function renderMain() {
   const list = monthExp();
-  const total = list.reduce((s,e)=>s+e.amount, 0);
-  const todayTotal = list.filter(e=>e.date===todayStr()).reduce((s,e)=>s+e.amount, 0);
-  const daysInMonth = new Date(state.viewY, state.viewM+1, 0).getDate();
+  const total = list.reduce((s,e)=>s+e.amount,0);
+  const todayT = list.filter(e=>e.date===todayStr()).reduce((s,e)=>s+e.amount,0);
+  const daysInM = new Date(viewY, viewM+1, 0).getDate();
   const now = new Date();
-  const passed = (state.viewY===now.getFullYear()&&state.viewM===now.getMonth()) ? now.getDate() : daysInMonth;
+  const passed = (viewY===now.getFullYear()&&viewM===now.getMonth()) ? now.getDate() : daysInM;
   const avg = passed>0 ? total/passed : 0;
 
-  root.innerHTML = `
+  document.getElementById('root').innerHTML = `
   <div class="app">
     <div class="header">
       <div class="header-top">
         <span class="app-name">Finance Tracker</span>
         <button class="sync-btn connected" onclick="manualSync()">
-          <span class="sync-dot"></span>${state.saving ? 'Saving...' : 'Drive Sync'}
+          <span class="sync-dot"></span>${isSaving?'Saving...':'Sheets ✓'}
         </button>
       </div>
       <div class="month-nav">
         <button class="mnav-btn" onclick="changeMonth(-1)">&#8249;</button>
-        <span class="month-name">${MONTHS[state.viewM]} ${state.viewY}</span>
+        <span class="month-name">${MONTHS[viewM]} ${viewY}</span>
         <button class="mnav-btn" onclick="changeMonth(1)">&#8250;</button>
       </div>
       <div class="total-card">
         <div class="total-label">Is Mahine Ka Kharch</div>
         <div class="total-amount">${fmt(total)}</div>
         <div class="mini-stats">
-          <div class="mini-stat"><div class="mini-stat-label">Aaj</div><div class="mini-stat-val">${fmtS(todayTotal)}</div></div>
+          <div class="mini-stat"><div class="mini-stat-label">Aaj</div><div class="mini-stat-val">${fmtS(todayT)}</div></div>
           <div class="mini-stat"><div class="mini-stat-label">Avg/Din</div><div class="mini-stat-val">${fmtS(avg)}</div></div>
           <div class="mini-stat"><div class="mini-stat-label">Entries</div><div class="mini-stat-val">${list.length}</div></div>
         </div>
       </div>
     </div>
     <div class="tabs">
-      <button class="tab ${state.activeTab==='list'?'active':''}" onclick="setTab('list')">📋 List</button>
-      <button class="tab ${state.activeTab==='add'?'active':''}" onclick="setTab('add')">＋ Add</button>
-      <button class="tab ${state.activeTab==='breakdown'?'active':''}" onclick="setTab('breakdown')">📊 Stats</button>
+      <button class="tab ${activeTab==='list'?'active':''}" onclick="setTab('list')">📋 List</button>
+      <button class="tab ${activeTab==='add'?'active':''}" onclick="setTab('add')">＋ Add</button>
+      <button class="tab ${activeTab==='breakdown'?'active':''}" onclick="setTab('breakdown')">📊 Stats</button>
     </div>
     <div class="content" id="content"></div>
   </div>`;
-
   renderTab();
 }
 
 function renderTab() {
   const c = document.getElementById('content');
   if (!c) return;
-  if (state.activeTab==='list') renderList(c);
-  else if (state.activeTab==='add') renderAdd(c);
+  if (activeTab==='list') renderList(c);
+  else if (activeTab==='add') renderAdd(c);
   else renderBreakdown(c);
 }
 
-// ── LIST ──
 function renderList(c) {
-  const list = monthExp().sort((a,b) => b.date.localeCompare(a.date) || b.id-a.id);
+  const list = monthExp().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
   if (!list.length) {
-    c.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Is mahine koi kharch nahi</div></div>`;
+    c.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Is mahine koi kharch nahi</div></div>`;
     return;
   }
-  const groups = {};
-  list.forEach(e => { if(!groups[e.date]) groups[e.date]=[]; groups[e.date].push(e); });
-  c.innerHTML = Object.entries(groups).map(([date, items]) => {
-    const d = new Date(date+'T00:00:00');
-    const now = new Date(); now.setHours(0,0,0,0);
-    const diff = Math.round((now-d)/86400000);
-    const label = diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
-    const dayTotal = items.reduce((s,e)=>s+e.amount,0);
+  const groups={};
+  list.forEach(e=>{ if(!groups[e.date]) groups[e.date]=[]; groups[e.date].push(e); });
+  c.innerHTML = Object.entries(groups).map(([date,items])=>{
+    const d=new Date(date+'T00:00:00'), now=new Date(); now.setHours(0,0,0,0);
+    const diff=Math.round((now-d)/86400000);
+    const label=diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
+    const dayTotal=items.reduce((s,e)=>s+e.amount,0);
     return `<div class="date-group">
       <div class="date-heading"><span>${label}</span><span class="date-total">${fmt(dayTotal)}</span></div>
-      ${items.map(e => {
-        const cat = CATS.find(c=>c.name===e.cat)||CATS[7];
+      ${items.map(e=>{
+        const cat=CATS.find(c=>c.name===e.cat)||CATS[7];
         return `<div class="exp-item">
           <div class="exp-icon">${cat.emoji}</div>
-          <div class="exp-info">
-            <div class="exp-desc">${escHtml(e.desc)}</div>
-            <div class="exp-cat">${e.cat}</div>
-          </div>
+          <div class="exp-info"><div class="exp-desc">${esc(e.desc)}</div><div class="exp-cat">${e.cat}</div></div>
           <div class="exp-right">
             <span class="exp-amt">${fmt(e.amount)}</span>
             <button class="exp-del" onclick="deleteExp(${e.id})">✕</button>
@@ -276,11 +347,10 @@ function renderList(c) {
   }).join('');
 }
 
-// ── ADD ──
 function renderAdd(c) {
-  const opts = CATS.map(c=>`<option value="${c.name}">${c.emoji} ${c.name}</option>`).join('');
-  c.innerHTML = `<div class="add-form">
-    <div class="form-title">Naya Kharch Add Karo</div>
+  const opts=CATS.map(c=>`<option value="${c.name}">${c.emoji} ${c.name}</option>`).join('');
+  c.innerHTML=`<div class="add-form">
+    <div class="form-title">Naya Kharch</div>
     <div class="form-field"><label>Kya tha?</label>
       <input type="text" id="f-desc" placeholder="e.g. Lunch, Petrol, Medicine" autocomplete="off"/></div>
     <div class="form-field"><label>Amount (Rs)</label>
@@ -289,53 +359,47 @@ function renderAdd(c) {
       <select id="f-cat">${opts}</select></div>
     <button class="submit-btn" onclick="addExpense()">✓ Kharch Add Karo</button>
   </div>`;
-  setTimeout(()=>document.getElementById('f-desc')?.focus(), 100);
-  document.getElementById('f-amt')?.addEventListener('keydown', e=>{ if(e.key==='Enter') addExpense(); });
+  setTimeout(()=>document.getElementById('f-desc')?.focus(),100);
+  document.getElementById('f-amt')?.addEventListener('keydown',e=>{if(e.key==='Enter')addExpense();});
 }
 
-// ── BREAKDOWN ──
 function renderBreakdown(c) {
-  const list = monthExp();
+  const list=monthExp();
   if (!list.length) {
-    c.innerHTML = `<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Koi data nahi is mahine</div></div>`;
+    c.innerHTML=`<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Koi data nahi is mahine</div></div>`;
     return;
   }
+  const catT={};
+  list.forEach(e=>catT[e.cat]=(catT[e.cat]||0)+e.amount);
+  const sortedC=Object.entries(catT).sort((a,b)=>b[1]-a[1]);
+  const maxC=sortedC[0][1];
+  const dayT={};
+  list.forEach(e=>dayT[e.date]=(dayT[e.date]||0)+e.amount);
+  const sortedD=Object.entries(dayT).sort((a,b)=>b[0].localeCompare(a[0]));
 
-  // Category totals
-  const catTotals = {};
-  list.forEach(e => catTotals[e.cat]=(catTotals[e.cat]||0)+e.amount);
-  const sortedCats = Object.entries(catTotals).sort((a,b)=>b[1]-a[1]);
-  const maxCat = sortedCats[0][1];
-
-  // Daily totals
-  const dayTotals = {};
-  list.forEach(e => dayTotals[e.date]=(dayTotals[e.date]||0)+e.amount);
-  const sortedDays = Object.entries(dayTotals).sort((a,b)=>b[0].localeCompare(a[0]));
-
-  c.innerHTML = `
+  c.innerHTML=`
     <div class="breakdown-section">
-      <div class="breakdown-title">Category Se</div>
-      ${sortedCats.map(([cat,amt])=>{
-        const cv = CATS.find(x=>x.name===cat)||CATS[7];
+      <div class="breakdown-title">Category Breakdown</div>
+      ${sortedC.map(([cat,amt])=>{
+        const cv=CATS.find(x=>x.name===cat)||CATS[7];
         return `<div class="breakdown-item">
           <div class="breakdown-icon">${cv.emoji}</div>
           <div class="breakdown-info">
             <div class="breakdown-name">${cat}<span>${fmt(amt)}</span></div>
-            <div class="breakdown-bar"><div class="breakdown-fill" style="width:${Math.round(amt/maxCat*100)}%"></div></div>
+            <div class="breakdown-bar"><div class="breakdown-fill" style="width:${Math.round(amt/maxC*100)}%"></div></div>
           </div>
         </div>`;
       }).join('')}
     </div>
     <div class="breakdown-section">
       <div class="breakdown-title">Din Ke Hisaab Se</div>
-      ${sortedDays.map(([date, amt])=>{
-        const d = new Date(date+'T00:00:00');
-        const now = new Date(); now.setHours(0,0,0,0);
-        const diff = Math.round((now-d)/86400000);
-        const label = diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
-        const count = list.filter(e=>e.date===date).length;
+      ${sortedD.map(([date,amt])=>{
+        const d=new Date(date+'T00:00:00'),now=new Date();now.setHours(0,0,0,0);
+        const diff=Math.round((now-d)/86400000);
+        const label=diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
+        const count=list.filter(e=>e.date===date).length;
         return `<div class="day-item">
-          <div><div class="day-label">${label}</div><div class="day-count">${count} entr${count===1?'y':'ies'}</div></div>
+          <div><div class="day-label">${label}</div><div class="day-count">${count} entries</div></div>
           <div class="day-amt">${fmt(amt)}</div>
         </div>`;
       }).join('')}
@@ -343,185 +407,92 @@ function renderBreakdown(c) {
 }
 
 // ── ACTIONS ──
-function setTab(tab) {
-  state.activeTab = tab;
-  render();
-}
+function setTab(tab) { activeTab=tab; renderTab(); }
 
 function changeMonth(dir) {
-  state.viewM += dir;
-  if (state.viewM<0) { state.viewM=11; state.viewY--; }
-  if (state.viewM>11) { state.viewM=0; state.viewY++; }
-  render();
+  viewM+=dir;
+  if(viewM<0){viewM=11;viewY--;}
+  if(viewM>11){viewM=0;viewY++;}
+  renderMain();
 }
 
-function addExpense() {
-  const desc = document.getElementById('f-desc')?.value.trim();
-  const amt = parseFloat(document.getElementById('f-amt')?.value);
-  const cat = document.getElementById('f-cat')?.value;
-  if (!desc||isNaN(amt)||amt<=0) { toast('Description aur amount daalo ⚠️'); return; }
-  state.expenses.push({ id: Date.now(), desc, amount: amt, cat, date: todayStr() });
-  state.activeTab = 'list';
-  scheduleSave();
-  render();
+async function addExpense() {
+  const desc=document.getElementById('f-desc')?.value.trim();
+  const amt=parseFloat(document.getElementById('f-amt')?.value);
+  const cat=document.getElementById('f-cat')?.value;
+  if(!desc||isNaN(amt)||amt<=0){toast('Description aur amount daalo ⚠️');return;}
+  const exp={id:Date.now(), date:todayStr(), desc, cat, amount:amt};
+  expenses.push(exp);
+  activeTab='list';
+  renderMain();
+  toast('Saving... ⏳');
+  await appendRow(exp);
   toast('Kharch add ho gaya ✅');
 }
 
-function deleteExp(id) {
-  if (!confirm('Yeh entry delete karein?')) return;
-  state.expenses = state.expenses.filter(e=>e.id!==id);
-  scheduleSave();
-  render();
+async function deleteExp(id) {
+  if(!confirm('Yeh entry delete karein?')) return;
+  expenses=expenses.filter(e=>e.id!==id);
+  renderMain();
+  toast('Deleting... ⏳');
+  await deleteRowById(id);
+  toast('Delete ho gaya ✅');
 }
 
 async function manualSync() {
   toast('Syncing... ⏳');
-  await saveToDrive();
+  await loadFromSheet();
+  renderMain();
   toast('Sync complete ✅');
-}
-
-// ── HELPERS ──
-function fmt(n) { return 'Rs\u00A0' + Math.round(n).toLocaleString(); }
-function fmtS(n) { return Math.round(n).toLocaleString(); }
-function todayStr() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
-function monthExp() {
-  return state.expenses.filter(e => {
-    const [y,m] = e.date.split('-').map(Number);
-    return y===state.viewY && m===state.viewM+1;
-  });
-}
-function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-// ── DRIVE ──
-async function apiCall(url, opts={}) {
-  const res = await fetch(url, {
-    ...opts,
-    headers: { 'Authorization': `Bearer ${state.accessToken}`, ...(opts.headers||{}) }
-  });
-  if (res.status === 401) {
-    state.accessToken = null;
-    localStorage.removeItem('finance_token');
-    state.screen = 'login';
-    render();
-    return null;
-  }
-  return res;
-}
-
-async function findOrCreateFile() {
-  // Search for existing file
-  const r = await apiCall(
-    `https://www.googleapis.com/drive/v3/files?q=name='${FILE_NAME}' and trashed=false&fields=files(id,name)&spaces=drive`
-  );
-  if (!r) return null;
-  const d = await r.json();
-  if (d.files && d.files.length > 0) {
-    state.driveFileId = d.files[0].id;
-    return state.driveFileId;
-  }
-  // Create new file
-  const meta = { name: FILE_NAME, mimeType: 'application/json' };
-  const form = new FormData();
-  form.append('metadata', new Blob([JSON.stringify(meta)], {type:'application/json'}));
-  form.append('file', new Blob(['[]'], {type:'application/json'}));
-  const cr = await apiCall(
-    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
-    { method: 'POST', body: form }
-  );
-  if (!cr) return null;
-  const cd = await cr.json();
-  state.driveFileId = cd.id;
-  return state.driveFileId;
-}
-
-async function loadFromDrive() {
-  try {
-    const fileId = await findOrCreateFile();
-    if (!fileId) return;
-    const r = await apiCall(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`);
-    if (!r) return;
-    const text = await r.text();
-    if (text && text.trim().startsWith('[')) {
-      state.expenses = JSON.parse(text);
-    } else {
-      state.expenses = [];
-    }
-  } catch(e) {
-    state.expenses = [];
-  }
-}
-
-async function saveToDrive() {
-  if (!state.accessToken) return;
-  state.saving = true;
-  try {
-    if (!state.driveFileId) await findOrCreateFile();
-    if (!state.driveFileId) return;
-    const body = JSON.stringify(state.expenses);
-    await apiCall(
-      `https://www.googleapis.com/upload/drive/v3/files/${state.driveFileId}?uploadType=media`,
-      { method: 'PATCH', headers: {'Content-Type':'application/json'}, body }
-    );
-  } catch(e) { toast('Save failed ❌'); }
-  state.saving = false;
-}
-
-function scheduleSave() {
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => saveToDrive(), 1500);
 }
 
 // ── AUTH ──
 function signIn() {
-  if (!tokenClient) { toast('Google load ho raha hai, thoda wait karo...'); return; }
-  tokenClient.requestAccessToken({ prompt: 'consent' });
+  if(!tokenClient){toast('Google load ho raha hai...');return;}
+  tokenClient.requestAccessToken({prompt:'consent'});
 }
 
-function initAuth() {
+async function initAuth() {
   tokenClient = google.accounts.oauth2.initTokenClient({
     client_id: CLIENT_ID,
     scope: SCOPE,
     callback: async (resp) => {
-      if (resp.error) { toast('Login failed ❌'); return; }
-      state.accessToken = resp.access_token;
-      localStorage.setItem('finance_token', resp.access_token);
-      state.screen = 'loading';
-      render();
-      await loadFromDrive();
-      state.screen = 'app';
-      render();
-      toast('Connected! Data load ho gaya ✅');
+      if(resp.error){toast('Login failed ❌');return;}
+      accessToken=resp.access_token;
+      localStorage.setItem('fin_token', accessToken);
+      showLoading('Data load ho raha hai...');
+      await initSheet();
+      await loadFromSheet();
+      renderMain();
+      toast('Connected! ✅');
     }
   });
 
-  // Try saved token
-  const saved = localStorage.getItem('finance_token');
-  if (saved) {
-    state.accessToken = saved;
-    loadFromDrive().then(() => {
-      state.screen = 'app';
-      render();
-    }).catch(() => {
-      state.screen = 'login';
-      render();
-    });
+  const saved=localStorage.getItem('fin_token');
+  if(saved) {
+    accessToken=saved;
+    showLoading('Data load ho raha hai...');
+    try {
+      await initSheet();
+      await loadFromSheet();
+      renderMain();
+    } catch(e) {
+      localStorage.removeItem('fin_token');
+      showLogin();
+    }
   } else {
-    state.screen = 'login';
-    render();
+    showLogin();
   }
 }
 
 // ── BOOT ──
-render(); // show loading first
-const waitForGoogle = setInterval(() => {
-  if (typeof google !== 'undefined' && google.accounts) {
-    clearInterval(waitForGoogle);
+showLoading();
+const wait=setInterval(()=>{
+  if(typeof google!=='undefined'&&google.accounts){
+    clearInterval(wait);
     initAuth();
   }
-}, 200);
+},200);
 </script>
 </body>
 </html>
