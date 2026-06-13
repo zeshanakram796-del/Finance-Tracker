@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ur" dir="ltr">
+<html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
@@ -28,19 +28,15 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .spinner { width: 32px; height: 32px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.login-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100dvh; padding: 40px 24px; text-align: center; }
-.login-icon { font-size: 56px; margin-bottom: 20px; }
-.login-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
-.login-sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.7; }
-.login-btn { display: flex; align-items: center; gap: 10px; background: white; color: #333; border: none; border-radius: 12px; padding: 14px 24px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; }
-.login-note { font-size: 11px; color: var(--muted); margin-top: 16px; line-height: 1.6; }
-
 .header { padding: 48px 20px 14px; flex-shrink: 0; }
 .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
 .app-name { font-size: 13px; font-weight: 500; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; }
-.sync-btn { display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--muted); cursor: pointer; font-family: var(--font); }
-.sync-btn.connected { color: var(--accent); border-color: #c8f56444; }
+.sync-status { display: flex; align-items: center; gap: 6px; border-radius: 20px; padding: 6px 12px; font-size: 12px; font-family: var(--font); border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; }
+.sync-status.synced { color: var(--accent); border-color: #c8f56444; }
+.sync-status.pending { color: #f5a623; border-color: #f5a62344; }
+.sync-status.offline { color: var(--danger); border-color: #ff6b6b44; }
 .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
 .month-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .mnav-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: 34px; height: 34px; color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 .month-name { font-size: 15px; font-weight: 600; min-width: 110px; text-align: center; }
@@ -66,17 +62,19 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .form-field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 13px center; padding-right: 36px; }
 .form-field input:focus, .form-field select:focus { border-color: var(--accent); }
 .form-field input::placeholder { color: var(--muted); }
-.submit-btn { width: 100%; padding: 13px; background: var(--accent); color: #0f0f0f; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; margin-top: 4px; transition: opacity 0.15s; }
+.submit-btn { width: 100%; padding: 13px; background: var(--accent); color: #0f0f0f; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; font-family: var(--font); cursor: pointer; margin-top: 4px; }
 .submit-btn:active { opacity: 0.8; }
 
 .date-group { margin-bottom: 18px; }
 .date-heading { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: flex; justify-content: space-between; }
 .date-total { font-family: var(--mono); font-size: 12px; color: var(--text); }
 .exp-item { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 6px; }
+.exp-item.pending-sync { border-color: #f5a62344; }
 .exp-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 19px; flex-shrink: 0; background: #c8f56415; }
 .exp-info { flex: 1; min-width: 0; }
 .exp-desc { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.exp-cat { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.exp-meta { font-size: 11px; color: var(--muted); margin-top: 2px; display: flex; gap: 6px; align-items: center; }
+.pending-badge { font-size: 9px; background: #f5a62322; color: #f5a623; border-radius: 4px; padding: 1px 5px; }
 .exp-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; flex-shrink: 0; }
 .exp-amt { font-size: 15px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
 .exp-del { background: none; border: none; color: var(--muted); font-size: 16px; cursor: pointer; padding: 2px; }
@@ -92,9 +90,10 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .breakdown-bar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
 .breakdown-fill { height: 5px; border-radius: 3px; background: var(--accent); }
 .day-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 6px; }
-.day-label { font-size: 13px; color: var(--text); }
-.day-amt { font-size: 13px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
+.day-left { }
+.day-label { font-size: 13px; color: var(--text); font-weight: 500; }
 .day-count { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.day-amt { font-size: 13px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
 
 .empty { text-align: center; padding: 48px 20px; color: var(--muted); }
 .empty-icon { font-size: 40px; margin-bottom: 12px; }
@@ -107,31 +106,38 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 <body>
 <div id="toast" class="toast"></div>
 <div id="root"></div>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
-const CLIENT_ID = '861916678896-0qq3sr6qjjcch41daa95e11bimp80gst.apps.googleusercontent.com';
-const SHEET_ID  = '1sEY6vT5nlQ24R3JUq_qJgENO4M4ZVv-CE57EGqToems';
-const SCOPE     = 'https://www.googleapis.com/auth/spreadsheets';
-const SHEET_NAME = 'Sheet1';
+const API_URL = 'https://script.google.com/macros/s/AKfycbz30Lg-ObvWIc2dt_dCOy0ibu9JwnCr74NxYddUx69pcvmCG8TbjQdeUHKwYVEhlS_SWA/exec';
 
 const CATS = [
-  {name:'Khaana',emoji:'🍛'},{name:'Transport',emoji:'🚗'},
-  {name:'Shopping',emoji:'🛍️'},{name:'Bill',emoji:'💡'},
+  {name:'Food',emoji:'🍛'},{name:'Transport',emoji:'🚗'},
+  {name:'Shopping',emoji:'🛍️'},{name:'Bills',emoji:'💡'},
   {name:'Health',emoji:'💊'},{name:'Business',emoji:'💼'},
   {name:'Family',emoji:'👨‍👩‍👧'},{name:'Other',emoji:'📦'},
 ];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const SHORT_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
-let tokenClient = null;
-let accessToken = null;
-let expenses = [];  // [{id, date, desc, cat, amount}]
+let expenses = [];
+let pendingQueue = [];
+let deletedQueue = [];
 let viewY = new Date().getFullYear();
 let viewM = new Date().getMonth();
 let activeTab = 'list';
-let saveTimer = null;
-let isSaving = false;
+let isSyncing = false;
+let isOnline = navigator.onLine;
 
-// ── TOAST ──
+function saveLocal() {
+  localStorage.setItem('fin_expenses', JSON.stringify(expenses));
+  localStorage.setItem('fin_pending', JSON.stringify(pendingQueue));
+  localStorage.setItem('fin_deleted', JSON.stringify(deletedQueue));
+}
+function loadLocal() {
+  expenses     = JSON.parse(localStorage.getItem('fin_expenses') || '[]');
+  pendingQueue = JSON.parse(localStorage.getItem('fin_pending')  || '[]');
+  deletedQueue = JSON.parse(localStorage.getItem('fin_deleted')  || '[]');
+}
+
 function toast(msg, dur=2500) {
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -139,130 +145,108 @@ function toast(msg, dur=2500) {
   setTimeout(()=>el.classList.remove('show'), dur);
 }
 
-// ── HELPERS ──
-function fmt(n)  { return 'Rs\u00A0' + Math.round(n).toLocaleString(); }
+function fmt(n)  { return 'Rs ' + Math.round(n).toLocaleString(); }
 function fmtS(n) { return Math.round(n).toLocaleString(); }
+
 function todayStr() {
   const d = new Date();
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
 }
+
+function parseDateParts(dateStr) {
+  const [y,m,d] = dateStr.split('-').map(Number);
+  return { year: y, month: m, day: d, monthName: MONTHS[m-1] };
+}
+
+function allExpenses() {
+  const ids = new Set(expenses.map(e=>e.id));
+  const merged = [...expenses];
+  pendingQueue.forEach(e => { if(!ids.has(e.id)) merged.push(e); });
+  return merged.filter(e => !deletedQueue.includes(e.id));
+}
+
 function monthExp() {
-  return expenses.filter(e => {
+  return allExpenses().filter(e => {
     const [y,m] = e.date.split('-').map(Number);
     return y===viewY && m===viewM+1;
   });
 }
-function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-// ── SHEETS API ──
-async function sheetsRequest(url, opts={}) {
-  const res = await fetch(url, {
-    ...opts,
-    headers: {'Authorization':`Bearer ${accessToken}`, 'Content-Type':'application/json', ...(opts.headers||{})}
-  });
-  if (res.status === 401) {
-    accessToken = null;
-    localStorage.removeItem('fin_token');
-    showLogin();
-    return null;
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function isPending(id) { return pendingQueue.some(e=>e.id===id); }
+
+function dayLabel(dateStr) {
+  const d = new Date(dateStr+'T00:00:00');
+  const now = new Date(); now.setHours(0,0,0,0);
+  const diff = Math.round((now-d)/86400000);
+  if (diff === 0) return 'Today';
+  if (diff === 1) return 'Yesterday';
+  return `${d.getDate()} ${SHORT_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function syncStatusHTML() {
+  const pendingCount = pendingQueue.length + deletedQueue.length;
+  if (!isOnline) return `<span class="sync-status offline" onclick="syncNow()"><span class="sync-dot"></span>Offline</span>`;
+  if (isSyncing)  return `<span class="sync-status pending"><span class="sync-dot"></span>Syncing...</span>`;
+  if (pendingCount > 0) return `<span class="sync-status pending" onclick="syncNow()"><span class="sync-dot"></span>${pendingCount} Pending</span>`;
+  return `<span class="sync-status synced" onclick="syncNow()"><span class="sync-dot"></span>Synced ✓</span>`;
+}
+
+// API
+async function apiGet(action) {
+  const r = await fetch(`${API_URL}?action=${action}`);
+  return r.json();
+}
+async function apiPost(action, params) {
+  const body = new URLSearchParams({action, ...params});
+  const r = await fetch(API_URL, {method:'POST', body});
+  return r.json();
+}
+
+async function syncNow() {
+  if (!isOnline || isSyncing) return;
+  isSyncing = true;
+  updateSyncStatus();
+  try {
+    if (pendingQueue.length > 0) {
+      await apiPost('add', {rows: JSON.stringify(pendingQueue)});
+      pendingQueue = [];
+    }
+    for (const id of deletedQueue) {
+      await apiPost('delete', {id});
+    }
+    deletedQueue = [];
+    const d = await apiGet('load');
+    if (d.success) expenses = d.expenses || [];
+    saveLocal();
+  } catch(e) {
+    toast('Sync failed, will retry ⚠️');
   }
-  return res;
+  isSyncing = false;
+  renderMain();
 }
 
-// Initialize sheet headers if empty
-async function initSheet() {
-  const r = await sheetsRequest(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A1:E1`
-  );
-  if (!r) return;
-  const d = await r.json();
-  if (!d.values || d.values.length === 0) {
-    // Write headers
-    await sheetsRequest(
-      `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A1:E1?valueInputOption=RAW`,
-      { method: 'PUT', body: JSON.stringify({ values: [['ID','Date','Description','Category','Amount']] }) }
-    );
-  }
+async function loadData() {
+  if (!isOnline) { renderMain(); return; }
+  try {
+    const d = await apiGet('load');
+    if (d.success) { expenses = d.expenses || []; saveLocal(); }
+  } catch(e) {}
+  renderMain();
 }
 
-// Load all rows from sheet
-async function loadFromSheet() {
-  const r = await sheetsRequest(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A2:E`
-  );
-  if (!r) return;
-  const d = await r.json();
-  if (!d.values) { expenses = []; return; }
-  expenses = d.values
-    .filter(row => row.length >= 5 && row[0])
-    .map(row => ({
-      id:     Number(row[0]),
-      date:   row[1],
-      desc:   row[2],
-      cat:    row[3],
-      amount: parseFloat(row[4]) || 0,
-    }));
+function updateSyncStatus() {
+  const el = document.getElementById('syncStatus');
+  if (el) el.outerHTML = syncStatusHTML();
 }
 
-// Append a single new row
-async function appendRow(exp) {
-  await sheetsRequest(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A:E:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`,
-    { method: 'POST', body: JSON.stringify({ values: [[exp.id, exp.date, exp.desc, exp.cat, exp.amount]] }) }
-  );
-}
-
-// Delete a row by finding matching ID
-async function deleteRowById(id) {
-  // Get all rows to find row index
-  const r = await sheetsRequest(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${SHEET_NAME}!A:A`
-  );
-  if (!r) return;
-  const d = await r.json();
-  if (!d.values) return;
-  const rowIndex = d.values.findIndex(row => Number(row[0]) === id);
-  if (rowIndex < 1) return; // 0 is header
-
-  // Get spreadsheet metadata for sheetId
-  const metaR = await sheetsRequest(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}`);
-  if (!metaR) return;
-  const meta = await metaR.json();
-  const sheetId = meta.sheets[0].properties.sheetId;
-
-  // Delete the row
-  await sheetsRequest(
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}:batchUpdate`,
-    { method: 'POST', body: JSON.stringify({
-      requests: [{
-        deleteDimension: {
-          range: { sheetId, dimension: 'ROWS', startIndex: rowIndex, endIndex: rowIndex+1 }
-        }
-      }]
-    })}
-  );
-}
-
-// ── RENDER ──
+// RENDER
 function showLoading(msg='Loading...') {
   document.getElementById('root').innerHTML = `
     <div class="loading-screen">
       <div class="loading-icon">💰</div>
       <div class="spinner"></div>
       <div class="loading-text">${msg}</div>
-    </div>`;
-}
-
-function showLogin() {
-  document.getElementById('root').innerHTML = `
-    <div class="login-screen">
-      <div class="login-icon">💰</div>
-      <div class="login-title">Finance Tracker</div>
-      <div class="login-sub">Apna daily kharch track karo.<br/>Data tumhari Google Sheets mein save hoga.</div>
-      <button class="login-btn" onclick="signIn()">
-        <img src="https://www.google.com/favicon.ico" width="20" height="20"/> Google se Login Karo
-      </button>
-      <div class="login-note">Sirf tumhari Finance Data sheet access hogi.<br/>Koi aur data nahi dekha jayega.</div>
     </div>`;
 }
 
@@ -280,9 +264,7 @@ function renderMain() {
     <div class="header">
       <div class="header-top">
         <span class="app-name">Finance Tracker</span>
-        <button class="sync-btn connected" onclick="manualSync()">
-          <span class="sync-dot"></span>${isSaving?'Saving...':'Sheets ✓'}
-        </button>
+        <span id="syncStatus">${syncStatusHTML()}</span>
       </div>
       <div class="month-nav">
         <button class="mnav-btn" onclick="changeMonth(-1)">&#8249;</button>
@@ -290,11 +272,11 @@ function renderMain() {
         <button class="mnav-btn" onclick="changeMonth(1)">&#8250;</button>
       </div>
       <div class="total-card">
-        <div class="total-label">Is Mahine Ka Kharch</div>
+        <div class="total-label">This Month's Expenses</div>
         <div class="total-amount">${fmt(total)}</div>
         <div class="mini-stats">
-          <div class="mini-stat"><div class="mini-stat-label">Aaj</div><div class="mini-stat-val">${fmtS(todayT)}</div></div>
-          <div class="mini-stat"><div class="mini-stat-label">Avg/Din</div><div class="mini-stat-val">${fmtS(avg)}</div></div>
+          <div class="mini-stat"><div class="mini-stat-label">Today</div><div class="mini-stat-val">${fmtS(todayT)}</div></div>
+          <div class="mini-stat"><div class="mini-stat-label">Daily Avg</div><div class="mini-stat-val">${fmtS(avg)}</div></div>
           <div class="mini-stat"><div class="mini-stat-label">Entries</div><div class="mini-stat-val">${list.length}</div></div>
         </div>
       </div>
@@ -320,23 +302,27 @@ function renderTab() {
 function renderList(c) {
   const list = monthExp().sort((a,b)=>b.date.localeCompare(a.date)||b.id-a.id);
   if (!list.length) {
-    c.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">Is mahine koi kharch nahi</div></div>`;
+    c.innerHTML=`<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">No expenses this month</div></div>`;
     return;
   }
   const groups={};
   list.forEach(e=>{ if(!groups[e.date]) groups[e.date]=[]; groups[e.date].push(e); });
   c.innerHTML = Object.entries(groups).map(([date,items])=>{
-    const d=new Date(date+'T00:00:00'), now=new Date(); now.setHours(0,0,0,0);
-    const diff=Math.round((now-d)/86400000);
-    const label=diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
-    const dayTotal=items.reduce((s,e)=>s+e.amount,0);
+    const dayTotal = items.reduce((s,e)=>s+e.amount,0);
     return `<div class="date-group">
-      <div class="date-heading"><span>${label}</span><span class="date-total">${fmt(dayTotal)}</span></div>
+      <div class="date-heading"><span>${dayLabel(date)}</span><span class="date-total">${fmt(dayTotal)}</span></div>
       ${items.map(e=>{
         const cat=CATS.find(c=>c.name===e.cat)||CATS[7];
-        return `<div class="exp-item">
+        const pending=isPending(e.id);
+        return `<div class="exp-item ${pending?'pending-sync':''}">
           <div class="exp-icon">${cat.emoji}</div>
-          <div class="exp-info"><div class="exp-desc">${esc(e.desc)}</div><div class="exp-cat">${e.cat}</div></div>
+          <div class="exp-info">
+            <div class="exp-desc">${esc(e.desc)}</div>
+            <div class="exp-meta">
+              <span>${e.cat}</span>
+              ${pending?'<span class="pending-badge">Pending Sync</span>':''}
+            </div>
+          </div>
           <div class="exp-right">
             <span class="exp-amt">${fmt(e.amount)}</span>
             <button class="exp-del" onclick="deleteExp(${e.id})">✕</button>
@@ -350,14 +336,14 @@ function renderList(c) {
 function renderAdd(c) {
   const opts=CATS.map(c=>`<option value="${c.name}">${c.emoji} ${c.name}</option>`).join('');
   c.innerHTML=`<div class="add-form">
-    <div class="form-title">Naya Kharch</div>
-    <div class="form-field"><label>Kya tha?</label>
+    <div class="form-title">Add New Expense</div>
+    <div class="form-field"><label>Description</label>
       <input type="text" id="f-desc" placeholder="e.g. Lunch, Petrol, Medicine" autocomplete="off"/></div>
     <div class="form-field"><label>Amount (Rs)</label>
       <input type="number" id="f-amt" placeholder="0" inputmode="numeric"/></div>
     <div class="form-field"><label>Category</label>
       <select id="f-cat">${opts}</select></div>
-    <button class="submit-btn" onclick="addExpense()">✓ Kharch Add Karo</button>
+    <button class="submit-btn" onclick="addExpense()">✓ Add Expense</button>
   </div>`;
   setTimeout(()=>document.getElementById('f-desc')?.focus(),100);
   document.getElementById('f-amt')?.addEventListener('keydown',e=>{if(e.key==='Enter')addExpense();});
@@ -366,7 +352,7 @@ function renderAdd(c) {
 function renderBreakdown(c) {
   const list=monthExp();
   if (!list.length) {
-    c.innerHTML=`<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">Koi data nahi is mahine</div></div>`;
+    c.innerHTML=`<div class="empty"><div class="empty-icon">📊</div><div class="empty-text">No data this month</div></div>`;
     return;
   }
   const catT={};
@@ -379,7 +365,7 @@ function renderBreakdown(c) {
 
   c.innerHTML=`
     <div class="breakdown-section">
-      <div class="breakdown-title">Category Breakdown</div>
+      <div class="breakdown-title">By Category</div>
       ${sortedC.map(([cat,amt])=>{
         const cv=CATS.find(x=>x.name===cat)||CATS[7];
         return `<div class="breakdown-item">
@@ -392,21 +378,21 @@ function renderBreakdown(c) {
       }).join('')}
     </div>
     <div class="breakdown-section">
-      <div class="breakdown-title">Din Ke Hisaab Se</div>
+      <div class="breakdown-title">By Day</div>
       ${sortedD.map(([date,amt])=>{
-        const d=new Date(date+'T00:00:00'),now=new Date();now.setHours(0,0,0,0);
-        const diff=Math.round((now-d)/86400000);
-        const label=diff===0?'Aaj':diff===1?'Kal':d.getDate()+' '+MONTHS[d.getMonth()];
         const count=list.filter(e=>e.date===date).length;
         return `<div class="day-item">
-          <div><div class="day-label">${label}</div><div class="day-count">${count} entries</div></div>
+          <div class="day-left">
+            <div class="day-label">${dayLabel(date)}</div>
+            <div class="day-count">${count} ${count===1?'entry':'entries'}</div>
+          </div>
           <div class="day-amt">${fmt(amt)}</div>
         </div>`;
       }).join('')}
     </div>`;
 }
 
-// ── ACTIONS ──
+// ACTIONS
 function setTab(tab) { activeTab=tab; renderTab(); }
 
 function changeMonth(dir) {
@@ -416,83 +402,40 @@ function changeMonth(dir) {
   renderMain();
 }
 
-async function addExpense() {
+function addExpense() {
   const desc=document.getElementById('f-desc')?.value.trim();
   const amt=parseFloat(document.getElementById('f-amt')?.value);
   const cat=document.getElementById('f-cat')?.value;
-  if(!desc||isNaN(amt)||amt<=0){toast('Description aur amount daalo ⚠️');return;}
+  if(!desc||isNaN(amt)||amt<=0){toast('Please enter description and amount ⚠️');return;}
   const exp={id:Date.now(), date:todayStr(), desc, cat, amount:amt};
-  expenses.push(exp);
+  pendingQueue.push(exp);
+  saveLocal();
   activeTab='list';
   renderMain();
-  toast('Saving... ⏳');
-  await appendRow(exp);
-  toast('Kharch add ho gaya ✅');
-}
-
-async function deleteExp(id) {
-  if(!confirm('Yeh entry delete karein?')) return;
-  expenses=expenses.filter(e=>e.id!==id);
-  renderMain();
-  toast('Deleting... ⏳');
-  await deleteRowById(id);
-  toast('Delete ho gaya ✅');
-}
-
-async function manualSync() {
-  toast('Syncing... ⏳');
-  await loadFromSheet();
-  renderMain();
-  toast('Sync complete ✅');
-}
-
-// ── AUTH ──
-function signIn() {
-  if(!tokenClient){toast('Google load ho raha hai...');return;}
-  tokenClient.requestAccessToken({prompt:'consent'});
-}
-
-async function initAuth() {
-  tokenClient = google.accounts.oauth2.initTokenClient({
-    client_id: CLIENT_ID,
-    scope: SCOPE,
-    callback: async (resp) => {
-      if(resp.error){toast('Login failed ❌');return;}
-      accessToken=resp.access_token;
-      localStorage.setItem('fin_token', accessToken);
-      showLoading('Data load ho raha hai...');
-      await initSheet();
-      await loadFromSheet();
-      renderMain();
-      toast('Connected! ✅');
-    }
-  });
-
-  const saved=localStorage.getItem('fin_token');
-  if(saved) {
-    accessToken=saved;
-    showLoading('Data load ho raha hai...');
-    try {
-      await initSheet();
-      await loadFromSheet();
-      renderMain();
-    } catch(e) {
-      localStorage.removeItem('fin_token');
-      showLogin();
-    }
+  if(isOnline) {
+    syncNow().then(()=>toast('Expense saved ✅'));
   } else {
-    showLogin();
+    toast('Offline — will sync when online 📶');
   }
 }
 
-// ── BOOT ──
+function deleteExp(id) {
+  if(!confirm('Delete this entry?')) return;
+  const wasP=pendingQueue.some(e=>e.id===id);
+  pendingQueue=pendingQueue.filter(e=>e.id!==id);
+  if(!wasP) deletedQueue.push(id);
+  expenses=expenses.filter(e=>e.id!==id);
+  saveLocal();
+  renderMain();
+  if(isOnline&&!wasP) syncNow();
+}
+
+window.addEventListener('online',  ()=>{ isOnline=true;  toast('Back online! Syncing... 📶'); syncNow(); });
+window.addEventListener('offline', ()=>{ isOnline=false; toast('Offline — data saved locally 📵'); updateSyncStatus(); });
+
+loadLocal();
 showLoading();
-const wait=setInterval(()=>{
-  if(typeof google!=='undefined'&&google.accounts){
-    clearInterval(wait);
-    initAuth();
-  }
-},200);
+loadData();
 </script>
 </body>
 </html>
