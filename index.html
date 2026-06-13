@@ -9,6 +9,8 @@
 <meta name="apple-mobile-web-app-title" content="Finance"/>
 <meta name="theme-color" content="#0f0f0f"/>
 <title>Finance Tracker</title>
+<link rel="manifest" href="/Finance-Tracker/manifest.json"/>
+<link rel="apple-touch-icon" href="https://via.placeholder.com/192x192/0f0f0f/c8f564?text=F"/>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root {
@@ -433,6 +435,11 @@ function deleteExp(id) {
 window.addEventListener('online',  ()=>{ isOnline=true;  toast('Back online! Syncing... 📶'); syncNow(); });
 window.addEventListener('offline', ()=>{ isOnline=false; toast('Offline — data saved locally 📵'); updateSyncStatus(); });
 
+if("serviceWorker" in navigator){
+  navigator.serviceWorker.register("/Finance-Tracker/sw.js")
+    .then(()=>console.log("SW registered"))
+    .catch(e=>console.log("SW error",e));
+}
 loadLocal();
 showLoading();
 loadData();
