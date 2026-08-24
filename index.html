@@ -391,7 +391,7 @@ async function syncNow() {
     for (const id of deletedQueue) await apiPost('delete', {id});
     deletedQueue = [];
     const d = await apiGet('load');
-    if (d.success) expenses = d.expenses || [];
+    if (d.success) expenses = d.expenseif (d.success) expenses = (d.expenses || []).map(e => ({...e, amount: parseFloat(e.amount)||0}));s || [];
     saveLocal();
   } catch(e) { toast('Sync failed ⚠️'); }
   isSyncing = false;
