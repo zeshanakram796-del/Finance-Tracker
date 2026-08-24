@@ -299,19 +299,35 @@ function todayStr() {
 function checkMidnight() {
   const today = todayStr();
   if (lastDayChecked && lastDayChecked !== today) {
+    const todayDay = new Date().getDate();
     applyRecurring();
-    toast('✨ New day started! Recurring expenses applied.');
+    if (todayDay === 1) {
+      toast('✨ New month! Recurring expenses added 📅');
+    } else {
+      toast('✨ New day started!');
+    }
     if(isOnline) syncNow();
   }
   lastDayChecked = today;
 }
 function applyRecurring() {
   const today = todayStr();
-  const alreadyAdded = allExpenses().filter(e => e.date === today && e.recurring);
-  const addedDescs = alreadyAdded.map(e => e.desc + '|' + e.cat);
+  const [ty, tm] = today.split('-').map(Number);
+  const todayDay = new Date().getDate();
+
+  // Sirf mahine ki 1 tarikh ko apply karo
+  if (todayDay !== 1) return;
+
+  // Is mahine already recurring add ho chuke hain?
+  const thisMonthRecurring = allExpenses().filter(e => {
+    const [ey, em] = e.date.split('-').map(Number);
+    return ey === ty && em === tm && e.recurring;
+  });
+  const addedKeys = thisMonthRecurring.map(e => e.desc + '|' + e.cat);
+
   recurringList.forEach(r => {
     const key = r.desc + '|' + r.cat;
-    if (!addedDescs.includes(key)) {
+    if (!addedKeys.includes(key)) {
       const exp = { id: Date.now() + Math.random(), date: today, desc: r.desc, cat: r.cat, amount: r.amount, note: r.note || '', recurring: true };
       pendingQueue.push(exp);
     }
@@ -391,7 +407,7 @@ async function syncNow() {
     for (const id of deletedQueue) await apiPost('delete', {id});
     deletedQueue = [];
     const d = await apiGet('load');
-    if (d.success) expenses = d.expenseif (d.success) expenses = (d.expenses || []).map(e => ({...e, amount: parseFloat(e.amount)||0}));s || [];
+    if (d.success) expenses = (d.expenses || []).map(e => ({...e, amount: parseFloat(e.amount)||0}));
     saveLocal();
   } catch(e) { toast('Sync failed ⚠️'); }
   isSyncing = false;
@@ -401,7 +417,7 @@ async function loadData() {
   if (!isOnline) { renderMain(); return; }
   try {
     const d = await apiGet('load');
-    if (d.success) { expenses = d.expenses || []; saveLocal(); }
+    if (d.success) { expenses = (d.expenses || []).map(e => ({...e, amount: parseFloat(e.amount)||0})); saveLocal(); }
   } catch(e) {}
   renderMain();
 }
@@ -887,7 +903,7 @@ function renderRecurring(c) {
       <div class="form-field"><label>Note (optional)</label>
         <input type="text" id="r-note" placeholder="e.g. Monthly rent" autocomplete="off"/></div>
       <button class="submit-btn" onclick="addRecurring()">✓ Add Recurring</button>
-      <div style="font-size:12px;color:var(--muted);margin-top:10px;text-align:center;">These will auto-add every day at midnight 🔁</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:10px;text-align:center;">Har mahine ki 1 tarikh ko auto-add honge 📅</div>
     </div>`;
 }
 
