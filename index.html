@@ -303,6 +303,7 @@ let isOnline     = navigator.onLine;
 let searchQ      = '';
 let filterCat    = '';
 let lastDayChecked = '';
+let showSettledUdhars = false;
 
 // ─── LOCAL STORAGE ────────────────────────────────────────────────────────────
 function saveLocal() {
@@ -385,12 +386,10 @@ function monthUdhars(y,m) {
 function allUnsettledUdhars() { return udhars.filter(u=>!u.settled); }
 
 function netBalance() {
-  // Total income - total expense + udhar liya - udhar diya (all time unsettled)
+  // Total income - total expense (all time)
   const totalIncome  = incomes.reduce((s,e)=>s+e.amount,0);
   const totalExpense = allExpenses().reduce((s,e)=>s+e.amount,0);
-  const udharLiya    = allUnsettledUdhars().filter(u=>u.dir==='liya').reduce((s,u)=>s+u.amount,0);
-  const udharDiya    = allUnsettledUdhars().filter(u=>u.dir==='diya').reduce((s,u)=>s+u.amount,0);
-  return totalIncome - totalExpense + udharLiya - udharDiya;
+  return totalIncome - totalExpense;
 }
 function isPending(id) { return pendingQueue.some(e=>e.id===id); }
 
@@ -490,7 +489,8 @@ function renderMain() {
   const totalInc  = incList.reduce((s,e)=>s+e.amount,0);
   const profit    = totalInc - totalExp;
   const today     = todayStr();
-  const todayExp  = expList.filter(e=>e.date===today).reduce((s,e)=>s+e.amount,0);
+  // Today's expense always from real today (not filtered by viewM)
+  const todayExp  = allExpenses().filter(e=>e.date===today).reduce((s,e)=>s+e.amount,0);
   const now       = new Date();
   const isCurrentMonth = viewY===now.getFullYear()&&viewM===now.getMonth();
   const daysInM   = new Date(viewY,viewM+1,0).getDate();
@@ -644,11 +644,10 @@ function renderTab(){
 
 // ─── LIST TAB ─────────────────────────────────────────────────────────────────
 function renderList(c){
-  // Combine expenses + incomes for this month into one timeline
+  // Combine expenses + incomes only (no udhar in list tab)
   let expList = monthExpenses().map(e=>({...e,_type:'expense'}));
   let incList = monthIncomes().map(e=>({...e,_type:'income'}));
-  let udList  = monthUdhars().map(u=>({...u,_type:'udhar', cat: u.dir==='diya'?'Udhar Diya':'Udhar Liya', desc: u.person+' — '+(u.dir==='diya'?'Diya':'Liya'), amount:u.amount}));
-  let list = [...expList,...incList,...udList].sort((a,b)=>b.date.localeCompare(a.date)||(b.id-a.id));
+  let list = [...expList,...incList].sort((a,b)=>b.date.localeCompare(a.date)||(b.id-a.id));
 
   if(searchQ) list=list.filter(e=>e.desc.toLowerCase().includes(searchQ.toLowerCase())||(e.cat||'').toLowerCase().includes(searchQ.toLowerCase())||(e.note||'').toLowerCase().includes(searchQ.toLowerCase()));
   if(filterCat) list=list.filter(e=>e._type===filterCat);
@@ -656,8 +655,7 @@ function renderList(c){
   const chipHTML=`
     <span class="filter-chip ${filterCat===''?'active':''}" onclick="toggleCatFilter('')">All</span>
     <span class="filter-chip ${filterCat==='expense'?'active':''}" onclick="toggleCatFilter('expense')">📉 Expense</span>
-    <span class="filter-chip ${filterCat==='income'?'active':''}" onclick="toggleCatFilter('income')">📈 Income</span>
-    <span class="filter-chip ${filterCat==='udhar'?'active':''}" onclick="toggleCatFilter('udhar')">🤝 Udhar</span>`;
+    <span class="filter-chip ${filterCat==='income'?'active':''}" onclick="toggleCatFilter('income')">📈 Income</span>`;
 
   let html=`<div class="search-bar"><span style="color:var(--muted)">🔍</span>
     <input type="text" placeholder="Search…" value="${esc(searchQ)}" oninput="doSearch(this.value)" autocomplete="off"/></div>
@@ -827,57 +825,67 @@ function setQuickAmt(a){
 
 // ─── UDHAR TAB ────────────────────────────────────────────────────────────────
 function renderUdhar(c){
-  const all=allUnsettledUdhars();
-  if(!all.length){
-    c.innerHTML=`<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">Koi udhar nahi abhi</div></div>
-    <div style="text-align:center;margin-top:16px"><button class="submit-btn" style="max-width:200px" onclick="setTab('add');setAddType('udhar')">+ Add Udhar</button></div>`;
-    return;
-  }
+  // Show all or only unsettled
+  const all = showSettledUdhars ? [...udhars] : allUnsettledUdhars();
+  const allForTotals = allUnsettledUdhars(); // totals always from unsettled
 
-  // Group by person
-  const persons={};
-  all.forEach(u=>{
-    if(!persons[u.person]) persons[u.person]={diya:0,liya:0,entries:[]};
-    if(u.dir==='diya') persons[u.person].diya+=u.amount;
-    else persons[u.person].liya+=u.amount;
-    persons[u.person].entries.push(u);
-  });
-
-  // Summary totals
-  const totalDiya=all.filter(u=>u.dir==='diya').reduce((s,u)=>s+u.amount,0);
-  const totalLiya=all.filter(u=>u.dir==='liya').reduce((s,u)=>s+u.amount,0);
+  // Summary totals (unsettled only)
+  const totalDiya=allForTotals.filter(u=>u.dir==='diya').reduce((s,u)=>s+u.amount,0);
+  const totalLiya=allForTotals.filter(u=>u.dir==='liya').reduce((s,u)=>s+u.amount,0);
   const netUdhar=totalLiya-totalDiya;
 
   let html=`
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;">
       <div style="background:#f5a62315;border:1px solid #f5a62333;border-radius:10px;padding:10px 12px;">
-        <div style="font-size:10px;color:var(--warn);text-transform:uppercase;">Maine Diya</div>
+        <div style="font-size:10px;color:var(--warn);text-transform:uppercase;">Diya</div>
         <div style="font-size:14px;font-weight:600;font-family:var(--mono);margin-top:3px;color:var(--warn)">${fmt(totalDiya)}</div>
       </div>
       <div style="background:#64b5f615;border:1px solid #64b5f633;border-radius:10px;padding:10px 12px;">
-        <div style="font-size:10px;color:var(--info);text-transform:uppercase;">Maine Liya</div>
+        <div style="font-size:10px;color:var(--info);text-transform:uppercase;">Liya</div>
         <div style="font-size:14px;font-weight:600;font-family:var(--mono);margin-top:3px;color:var(--info)">${fmt(totalLiya)}</div>
       </div>
       <div style="background:${netUdhar>=0?'#c8f56415':'#ff6b6b15'};border:1px solid ${netUdhar>=0?'#c8f56433':'#ff6b6b33'};border-radius:10px;padding:10px 12px;">
         <div style="font-size:10px;color:var(--muted);text-transform:uppercase;">Net</div>
         <div style="font-size:14px;font-weight:600;font-family:var(--mono);margin-top:3px;color:${netUdhar>=0?'var(--accent)':'var(--danger)'}">${netUdhar>=0?'+':''}${fmt(netUdhar)}</div>
       </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:14px;">
+      <button class="submit-btn" style="flex:1;padding:10px;font-size:13px;background:var(--accent);color:#0f0f0f" onclick="setTab('add');setAddType('udhar')">+ Add Udhar</button>
+      <button style="padding:10px 14px;border-radius:10px;border:1px solid var(--border);background:${showSettledUdhars?'#c8f56422':'var(--surface2)'};color:${showSettledUdhars?'var(--accent)':'var(--muted)'};font-size:12px;font-family:var(--font);cursor:pointer;" onclick="toggleSettled()">
+        ${showSettledUdhars?'✓ Settled':'History'}
+      </button>
     </div>`;
+
+  if(!all.length){
+    html+=`<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">${showSettledUdhars?'Koi udhar nahi':'Koi pending udhar nahi'}</div></div>`;
+    c.innerHTML=html; return;
+  }
+
+  // Group by person
+  const persons={};
+  all.forEach(u=>{
+    if(!persons[u.person]) persons[u.person]={diya:0,liya:0,entries:[]};
+    if(!u.settled){
+      if(u.dir==='diya') persons[u.person].diya+=u.amount;
+      else persons[u.person].liya+=u.amount;
+    }
+    persons[u.person].entries.push(u);
+  });
 
   html+=Object.entries(persons).map(([person,data])=>{
     const net=data.liya-data.diya;
     const netClass=net>0?'positive':net<0?'negative':'zero';
-    const netLabel=net>0?`Unhe dena hai mujhe ${fmt(net)}`:net<0?`Mujhe dena hai unhe ${fmt(Math.abs(net))}`:'Barabar';
+    const netLabel=net>0?`Unhe dena hai mujhe ${fmt(net)}`:net<0?`Mujhe dena hai unhe ${fmt(Math.abs(net))}`:'Barabar ✓';
     const rows=data.entries.sort((a,b)=>b.date.localeCompare(a.date)).map(u=>`
-      <div class="udhar-row ${u.dir}">
+      <div class="udhar-row ${u.dir}" style="opacity:${u.settled?0.5:1}">
         <div>
-          <span>${u.dir==='diya'?'💸 Maine Diya':'🤝 Maine Liya'}</span>
+          <span>${u.dir==='diya'?'💸 Diya':'🤝 Liya'}${u.settled?' <span style="font-size:9px;background:#c8f56422;color:var(--accent);border-radius:4px;padding:1px 5px;margin-left:4px">Settled</span>':''}</span>
           <span style="color:var(--muted);margin-left:8px;font-size:10px">${dayLabel(u.date)}</span>
           ${u.note?`<div style="font-size:10px;color:var(--muted)">${esc(u.note)}</div>`:''}
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <span style="font-family:var(--mono);font-weight:600">${fmt(u.amount)}</span>
-          <button class="udhar-settle-btn" onclick="settleUdhar('${u.id}')">Settle ✓</button>
+          ${!u.settled?`<button class="udhar-settle-btn" onclick="settleUdhar('${u.id}')">Settle ✓</button>`:''}
         </div>
       </div>`).join('');
     return `<div class="udhar-person-card">
@@ -889,9 +897,9 @@ function renderUdhar(c){
     </div>`;
   }).join('');
 
-  html+=`<div style="text-align:center;margin-top:16px"><button class="submit-btn" style="max-width:220px" onclick="setTab('add');setAddType('udhar')">+ Add Udhar</button></div>`;
   c.innerHTML=html;
 }
+function toggleSettled(){ showSettledUdhars=!showSettledUdhars; renderTab(); }
 
 function openUdharDetail(id){
   const u=udhars.find(u=>u.id==id);
