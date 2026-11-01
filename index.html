@@ -344,7 +344,7 @@ function toast(msg, dur=2800) {
 }
 function fmt(n)  { return 'Rs ' + Math.round(n).toLocaleString(); }
 function fmtS(n) { return Math.round(n).toLocaleString(); }
-function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+function esc(s)  { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function dayLabel(dateStr) {
   const d = new Date(dateStr+'T00:00:00');
   const now = new Date(); now.setHours(0,0,0,0);
@@ -356,10 +356,10 @@ function dayLabel(dateStr) {
 
 // ─── DATA HELPERS ─────────────────────────────────────────────────────────────
 function allExpenses() {
-  const ids = new Set(expenses.map(e=>e.id));
+  const ids = new Set(expenses.map(e=>String(e.id)));
   const merged = [...expenses];
-  pendingQueue.forEach(e=>{ if(!ids.has(e.id)) merged.push(e); });
-  return merged.filter(e=>!deletedQueue.includes(e.id));
+  pendingQueue.forEach(e=>{ if(!ids.has(String(e.id))) merged.push(e); });
+  return merged.filter(e=>!deletedQueue.map(String).includes(String(e.id)));
 }
 function monthExpenses(y,m) {
   y=y??viewY; m=m??viewM;
@@ -1282,8 +1282,17 @@ function saveEditExp(id){
   const cat=document.getElementById('e-cat')?.value;
   const note=document.getElementById('e-note')?.value.trim()||'';
   if(!desc||isNaN(amt)||amt<=0){toast('Invalid values ⚠️');return;}
-  expenses=expenses.map(e=>e.id==id?{...e,desc,amount:amt,cat,note}:e);
-  pendingQueue=pendingQueue.map(e=>e.id==id?{...e,desc,amount:amt,cat,note}:e);
+  const inPending=pendingQueue.some(e=>e.id==id);
+  if(inPending){
+    pendingQueue=pendingQueue.map(e=>e.id==id?{...e,desc,amount:amt,cat,note}:e);
+  } else {
+    // Synced item: delete old from sheet, re-add updated as new pending
+    const original=expenses.find(e=>e.id==id);
+    const numId=isNaN(id)?id:Number(id);
+    deletedQueue.push(numId);
+    expenses=expenses.filter(e=>e.id!=id);
+    pendingQueue.push({...original,desc,amount:amt,cat,note,id:Date.now()});
+  }
   saveLocal();closeModal();renderMain();
   if(isOnline) syncNow().then(()=>toast('Updated ✅'));
   else toast('Updated locally 📝');
