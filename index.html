@@ -350,6 +350,22 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--f
 }
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
+<script>
+// Force clear old service worker caches on version bump
+const APP_VER = '3';
+if(localStorage.getItem('app_ver') !== APP_VER) {
+  localStorage.setItem('app_ver', APP_VER);
+  if('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => {
+      Promise.all(regs.map(r => r.unregister())).then(() => {
+        caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))).then(() => {
+          location.reload(true);
+        });
+      });
+    });
+  }
+}
+</script>
 </head>
 <body>
 <div id="toast" class="toast"></div>
