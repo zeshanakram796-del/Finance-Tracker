@@ -374,6 +374,7 @@ if(localStorage.getItem('app_ver')!==APP_VER){
 <script>
 // ─── CONFIG ───────────────────────────────────────────────────────────────────
 const API_URL = 'https://script.google.com/macros/s/AKfycbz30Lg-ObvWIc2dt_dCOy0ibu9JwnCr74NxYddUx69pcvmCG8TbjQdeUHKwYVEhlS_SWA/exec';
+const CM_API  = 'https://script.google.com/macros/s/AKfycbxRjvW4HtnoZQtFsppL3uS0_WqZUjVp7ZEmbdFjrG5isbyjFrGoOlNcqIASqDO_ViNu/exec';
 
 const CATS = [
   {name:'Food',emoji:'🍛'},{name:'Transport',emoji:'🚗'},
@@ -400,6 +401,7 @@ let deletedQueue = [];
 let recurringList = [];
 let budgets      = {};
 let dailyLimit   = 0;
+let shopBals     = {cash:0,jazz:0,easy:0,bank:0};
 let viewY = new Date().getFullYear();
 let viewM = new Date().getMonth();
 let activeTab    = 'list';
@@ -490,34 +492,37 @@ function monthUdhars(y,m) {
 }
 function allUnsettledUdhars() { return udhars.filter(u=>!u.settled); }
 
-function getShopBalances() {
-  try { return JSON.parse(localStorage.getItem('cm_balances') || '{}'); } catch(e) { return {}; }
-}
+function getShopBalances() { return shopBals; }
 function getShopTotal() {
-  const b = getShopBalances();
-  return (b.cash||0)+(b.jazz||0)+(b.easy||0)+(b.bank||0);
+  return (shopBals.cash||0)+(shopBals.jazz||0)+(shopBals.easy||0)+(shopBals.bank||0);
+}
+async function fetchShopBalances() {
+  try {
+    const r = await fetch(CM_API + '?action=getWallets');
+    const d = await r.json();
+    if (d && d.success && Array.isArray(d.txs)) {
+      const b = {cash:0, jazz:0, easy:0, bank:0};
+      d.txs.forEach(tx => {
+        const w = (tx.wallet||'').toLowerCase();
+        const key = w==='jazzcash'||w==='jazz' ? 'jazz'
+                  : w==='easypaisa'||w==='easy' ? 'easy'
+                  : w==='bank' ? 'bank' : 'cash';
+        const amt = parseFloat(tx.amount)||0;
+        if(tx.type==='in') b[key] += amt;
+        else b[key] -= amt;
+      });
+      shopBals = b;
+      renderMain();
+    }
+  } catch(e) {}
 }
 function deductFromWallet(wallet, amount, desc) {
-  try {
-    const b = getShopBalances();
-    const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
-    b[key] = (b[key]||0) - amount;
-    const tx = JSON.parse(localStorage.getItem('cm_balanceTx')||'[]');
-    tx.push({type:'out',wallet:key,amount,desc,date:todayStr(),ts:Date.now(),source:'finance'});
-    localStorage.setItem('cm_balances', JSON.stringify(b));
-    localStorage.setItem('cm_balanceTx', JSON.stringify(tx));
-  } catch(e) {}
+  const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
+  shopBals[key] = (shopBals[key]||0) - amount;
 }
 function addToWallet(wallet, amount, desc) {
-  try {
-    const b = getShopBalances();
-    const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
-    b[key] = (b[key]||0) + amount;
-    const tx = JSON.parse(localStorage.getItem('cm_balanceTx')||'[]');
-    tx.push({type:'in',wallet:key,amount,desc,date:todayStr(),ts:Date.now(),source:'finance'});
-    localStorage.setItem('cm_balances', JSON.stringify(b));
-    localStorage.setItem('cm_balanceTx', JSON.stringify(tx));
-  } catch(e) {}
+  const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
+  shopBals[key] = (shopBals[key]||0) + amount;
 }
 function netBalance() {
   const totalIncome  = incomes.reduce((s,e)=>s+e.amount,0);
@@ -527,7 +532,7 @@ function netBalance() {
 function isPending(id) { return pendingQueue.some(e=>e.id===id); }
 
 function shopWalletSettingsHTML() {
-  const b = getShopBalances();
+  const b = shopBals;
   const wallets = [
     {key:'cash', icon:'💵', name:'Cash'},
     {key:'jazz', icon:'📲', name:'JazzCash'},
@@ -549,26 +554,23 @@ function shopWalletSettingsHTML() {
     <button class="btn-primary" style="margin-top:10px;width:100%" onclick="saveShopWallets()">Save Balances</button>`;
 }
 function saveShopWallets() {
-  const b = getShopBalances();
   ['cash','jazz','easy','bank'].forEach(k=>{
     const el = document.getElementById('sw-'+k);
-    if(el) b[k] = parseFloat(el.value)||0;
+    if(el) shopBals[k] = parseFloat(el.value)||0;
   });
-  localStorage.setItem('cm_balances', JSON.stringify(b));
-  toast('Shop balances saved ✅');
+  toast('Shop balances updated ✅');
   renderMain();
 }
 
 function shopWalletsHTML() {
   try {
-    const b = JSON.parse(localStorage.getItem('cm_balances') || 'null');
-    if (!b) return '';
+    const b = shopBals;
     const cash  = b.cash  || 0;
     const jazz  = b.jazz  || 0;
     const easy  = b.easy  || 0;
     const bank  = b.bank  || 0;
     const total = cash + jazz + easy + bank;
-    if (total === 0 && cash === 0 && jazz === 0 && easy === 0 && bank === 0) return '';
+    if (total === 0) return '';
     return `<div class="shop-wallets-card">
       <div class="swc-header">
         <span class="swc-title">🏪 Shop Wallets</span>
@@ -581,7 +583,6 @@ function shopWalletsHTML() {
         <div class="swc-item"><span class="swc-icon">🏦</span><div class="swc-info"><div class="swc-name">Bank</div><div class="swc-val">${fmt(bank)}</div></div></div>
       </div>
     </div>`;
-  } catch(e) { return ''; }
 }
 
 // ─── MIDNIGHT / RECURRING ─────────────────────────────────────────────────────
@@ -651,6 +652,7 @@ async function syncNow() {
   } catch(e){ toast('Sync failed ⚠️'); }
   isSyncing=false;
   renderMain();
+  fetchShopBalances();
 }
 async function loadData() {
   if(!isOnline){renderMain();return;}
@@ -659,6 +661,7 @@ async function loadData() {
     if(d.success){expenses=(d.expenses||[]).map(e=>({...e,amount:parseFloat(e.amount)||0}));saveLocal();}
   } catch(e){}
   renderMain();
+  fetchShopBalances();
 }
 
 // ─── RENDER MAIN ──────────────────────────────────────────────────────────────
