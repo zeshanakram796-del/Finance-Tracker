@@ -526,6 +526,39 @@ function netBalance() {
 }
 function isPending(id) { return pendingQueue.some(e=>e.id===id); }
 
+function shopWalletSettingsHTML() {
+  const b = getShopBalances();
+  const wallets = [
+    {key:'cash', icon:'💵', name:'Cash'},
+    {key:'jazz', icon:'📲', name:'JazzCash'},
+    {key:'easy', icon:'💚', name:'EasyPaisa'},
+    {key:'bank', icon:'🏦', name:'Bank'},
+  ];
+  const rows = wallets.map(w=>`
+    <div class="settings-row">
+      <div><div class="settings-row-lbl">${w.icon} ${w.name}</div></div>
+      <input class="settings-input" type="number" inputmode="numeric" placeholder="0"
+        id="sw-${w.key}" value="${b[w.key]||''}" style="width:110px"/>
+    </div>`).join('');
+  const total = (b.cash||0)+(b.jazz||0)+(b.easy||0)+(b.bank||0);
+  return `${rows}
+    <div class="settings-row" style="border-top:1px solid var(--border2);margin-top:4px;padding-top:12px">
+      <div><div class="settings-row-lbl" style="color:var(--text2)">Total</div></div>
+      <span style="font-family:var(--mono);font-weight:600;color:var(--accent)">${fmt(total)}</span>
+    </div>
+    <button class="btn-primary" style="margin-top:10px;width:100%" onclick="saveShopWallets()">Save Balances</button>`;
+}
+function saveShopWallets() {
+  const b = getShopBalances();
+  ['cash','jazz','easy','bank'].forEach(k=>{
+    const el = document.getElementById('sw-'+k);
+    if(el) b[k] = parseFloat(el.value)||0;
+  });
+  localStorage.setItem('cm_balances', JSON.stringify(b));
+  toast('Shop balances saved ✅');
+  renderMain();
+}
+
 function shopWalletsHTML() {
   try {
     const b = JSON.parse(localStorage.getItem('cm_balances') || 'null');
@@ -1343,6 +1376,10 @@ function renderSettings(c){
     <div class="settings-sect">
       <div class="settings-sect-title">Category Budgets (Rs / month)</div>
       ${catBudgets}
+    </div>
+    <div class="settings-sect">
+      <div class="settings-sect-title">🏪 Shop Wallets (Chouhdary Mobiles)</div>
+      ${shopWalletSettingsHTML()}
     </div>
     <div class="settings-sect">
       <div class="settings-sect-title">Data</div>
