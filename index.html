@@ -563,26 +563,25 @@ function saveShopWallets() {
 }
 
 function shopWalletsHTML() {
-  try {
-    const b = shopBals;
-    const cash  = b.cash  || 0;
-    const jazz  = b.jazz  || 0;
-    const easy  = b.easy  || 0;
-    const bank  = b.bank  || 0;
-    const total = cash + jazz + easy + bank;
-    if (total === 0) return '';
-    return `<div class="shop-wallets-card">
-      <div class="swc-header">
-        <span class="swc-title">🏪 Shop Wallets</span>
-        <span class="swc-total">${fmt(total)}</span>
-      </div>
-      <div class="swc-grid">
-        <div class="swc-item"><span class="swc-icon">💵</span><div class="swc-info"><div class="swc-name">Cash</div><div class="swc-val">${fmt(cash)}</div></div></div>
-        <div class="swc-item"><span class="swc-icon">📲</span><div class="swc-info"><div class="swc-name">JazzCash</div><div class="swc-val">${fmt(jazz)}</div></div></div>
-        <div class="swc-item"><span class="swc-icon">💚</span><div class="swc-info"><div class="swc-name">EasyPaisa</div><div class="swc-val">${fmt(easy)}</div></div></div>
-        <div class="swc-item"><span class="swc-icon">🏦</span><div class="swc-info"><div class="swc-name">Bank</div><div class="swc-val">${fmt(bank)}</div></div></div>
-      </div>
-    </div>`;
+  const b = shopBals;
+  const cash  = b.cash  || 0;
+  const jazz  = b.jazz  || 0;
+  const easy  = b.easy  || 0;
+  const bank  = b.bank  || 0;
+  const total = cash + jazz + easy + bank;
+  if (total === 0) return '';
+  return `<div class="shop-wallets-card">
+    <div class="swc-header">
+      <span class="swc-title">🏪 Shop Wallets</span>
+      <span class="swc-total">${fmt(total)}</span>
+    </div>
+    <div class="swc-grid">
+      <div class="swc-item"><span class="swc-icon">💵</span><div class="swc-info"><div class="swc-name">Cash</div><div class="swc-val">${fmt(cash)}</div></div></div>
+      <div class="swc-item"><span class="swc-icon">📲</span><div class="swc-info"><div class="swc-name">JazzCash</div><div class="swc-val">${fmt(jazz)}</div></div></div>
+      <div class="swc-item"><span class="swc-icon">💚</span><div class="swc-info"><div class="swc-name">EasyPaisa</div><div class="swc-val">${fmt(easy)}</div></div></div>
+      <div class="swc-item"><span class="swc-icon">🏦</span><div class="swc-info"><div class="swc-name">Bank</div><div class="swc-val">${fmt(bank)}</div></div></div>
+    </div>
+  </div>`;
 }
 
 // ─── MIDNIGHT / RECURRING ─────────────────────────────────────────────────────
