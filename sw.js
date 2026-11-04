@@ -1,4 +1,4 @@
-const CACHE = 'finance-v2';
+const CACHE = 'finance-v3';
 
 self.addEventListener('install', e => {
   e.waitUntil(
@@ -17,7 +17,6 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // Only cache the main HTML page
   if (e.request.url.includes('Finance-Tracker') && !e.request.url.includes('.')) {
     e.respondWith(
       fetch(e.request).catch(() => caches.match('/Finance-Tracker/index.html'))
@@ -36,6 +35,5 @@ self.addEventListener('fetch', e => {
     );
     return;
   }
-  // Everything else — network first
   e.respondWith(fetch(e.request).catch(() => new Response('')));
 });
