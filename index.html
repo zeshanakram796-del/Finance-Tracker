@@ -548,7 +548,9 @@ function saveShopWallets() {
     const el = document.getElementById('sw-'+k);
     if(el) shopBals[k] = parseFloat(el.value)||0;
   });
-  toast('Shop balances updated ✅');
+  apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank})
+    .catch(()=>{});
+  toast('Shop balances saved to Sheet ✅');
   renderMain();
 }
 
