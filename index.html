@@ -447,10 +447,39 @@ function monthUdhars(y,m) {
 }
 function allUnsettledUdhars() { return udhars.filter(u=>!u.settled); }
 
+function getShopBalances() {
+  try { return JSON.parse(localStorage.getItem('cm_balances') || '{}'); } catch(e) { return {}; }
+}
+function getShopTotal() {
+  const b = getShopBalances();
+  return (b.cash||0)+(b.jazz||0)+(b.easy||0)+(b.bank||0);
+}
+function deductFromWallet(wallet, amount, desc) {
+  try {
+    const b = getShopBalances();
+    const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
+    b[key] = (b[key]||0) - amount;
+    const tx = JSON.parse(localStorage.getItem('cm_balanceTx')||'[]');
+    tx.push({type:'out',wallet:key,amount,desc,date:todayStr(),ts:Date.now(),source:'finance'});
+    localStorage.setItem('cm_balances', JSON.stringify(b));
+    localStorage.setItem('cm_balanceTx', JSON.stringify(tx));
+  } catch(e) {}
+}
+function addToWallet(wallet, amount, desc) {
+  try {
+    const b = getShopBalances();
+    const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
+    b[key] = (b[key]||0) + amount;
+    const tx = JSON.parse(localStorage.getItem('cm_balanceTx')||'[]');
+    tx.push({type:'in',wallet:key,amount,desc,date:todayStr(),ts:Date.now(),source:'finance'});
+    localStorage.setItem('cm_balances', JSON.stringify(b));
+    localStorage.setItem('cm_balanceTx', JSON.stringify(tx));
+  } catch(e) {}
+}
 function netBalance() {
   const totalIncome  = incomes.reduce((s,e)=>s+e.amount,0);
   const totalExpense = allExpenses().reduce((s,e)=>s+e.amount,0);
-  return totalIncome - totalExpense;
+  return totalIncome - totalExpense + getShopTotal();
 }
 function isPending(id) { return pendingQueue.some(e=>e.id===id); }
 
@@ -646,7 +675,7 @@ function renderMain() {
       </div>
 
       <div class="balance-hero ${nbClass}">
-        <div class="bal-eyebrow">Net balance · all time</div>
+        <div class="bal-eyebrow">Total balance · wallets + personal</div>
         <div class="bal-amount">${nb>=0?'':'-'}${fmt(Math.abs(nb))}</div>
         <div class="bal-grid">
           <div class="bal-stat">
@@ -843,6 +872,7 @@ function renderAdd(c){
         <textarea id="f-note" placeholder="e.g. Dinner with family…"></textarea></div>
       <div class="field"><label>Date</label>
         <input type="date" id="f-date" value="${todayStr()}"/></div>
+      ${walletSelectorHTML('exp')}
       <button class="submit-btn" onclick="addExpense()">Add Expense</button>`;
   } else if(addType==='income'){
     formHTML=`
@@ -856,6 +886,7 @@ function renderAdd(c){
         <textarea id="f-note" placeholder="e.g. Monthly salary…"></textarea></div>
       <div class="field"><label>Date</label>
         <input type="date" id="f-date" value="${todayStr()}"/></div>
+      ${walletSelectorHTML('inc')}
       <button class="submit-btn" onclick="addIncome()">Add Income</button>`;
   } else {
     formHTML=`
@@ -885,6 +916,19 @@ function renderAdd(c){
     ${formHTML}
   </div>`;
   setTimeout(()=>document.getElementById('f-desc')?.focus()||document.getElementById('f-person')?.focus(),120);
+}
+function walletSelectorHTML(prefix) {
+  const b = getShopBalances();
+  const hasWallets = (b.cash||0)+(b.jazz||0)+(b.easy||0)+(b.bank||0) > 0;
+  if (!hasWallets) return '';
+  return `<div class="field"><label>Wallet (deduct from)</label>
+    <select id="${prefix}-wallet">
+      <option value="none">— None (don't deduct) —</option>
+      <option value="cash">💵 Cash — ${fmt(b.cash||0)}</option>
+      <option value="jazz">📲 JazzCash — ${fmt(b.jazz||0)}</option>
+      <option value="easy">💚 EasyPaisa — ${fmt(b.easy||0)}</option>
+      <option value="bank">🏦 Bank — ${fmt(b.bank||0)}</option>
+    </select></div>`;
 }
 function setAddType(t){addType=t;renderTab();}
 function setQuickAmt(a){
@@ -1256,8 +1300,10 @@ function addExpense(){
   const note=document.getElementById('f-note')?.value.trim()||'';
   const date=document.getElementById('f-date')?.value||todayStr();
   if(!desc||isNaN(amt)||amt<=0){toast('Description aur amount likhein ⚠️');return;}
+  const wallet=document.getElementById('exp-wallet')?.value||'none';
   const exp={id:Date.now(),date,desc,cat,amount:amt,note};
   pendingQueue.push(exp);
+  if(wallet!=='none') deductFromWallet(wallet,amt,desc);
   saveLocal();
   activeTab='list';
   const [y,m]=date.split('-').map(Number);
@@ -1273,7 +1319,9 @@ function addIncome(){
   const note=document.getElementById('f-note')?.value.trim()||'';
   const date=document.getElementById('f-date')?.value||todayStr();
   if(!desc||isNaN(amt)||amt<=0){toast('Description aur amount likhein ⚠️');return;}
+  const wallet=document.getElementById('inc-wallet')?.value||'none';
   incomes.push({id:Date.now(),date,desc,cat,amount:amt,note});
+  if(wallet!=='none') addToWallet(wallet,amt,desc);
   saveLocal();
   activeTab='list';
   const [y,m]=date.split('-').map(Number);
