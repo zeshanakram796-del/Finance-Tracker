@@ -498,20 +498,10 @@ function getShopTotal() {
 }
 async function fetchShopBalances() {
   try {
-    const r = await fetch(CM_API + '?action=getWallets');
+    const r = await fetch(API_URL + '?action=getShopBalance');
     const d = await r.json();
-    if (d && d.success && Array.isArray(d.txs)) {
-      const b = {cash:0, jazz:0, easy:0, bank:0};
-      d.txs.forEach(tx => {
-        const w = (tx.wallet||'').toLowerCase();
-        const key = w==='jazzcash'||w==='jazz' ? 'jazz'
-                  : w==='easypaisa'||w==='easy' ? 'easy'
-                  : w==='bank' ? 'bank' : 'cash';
-        const amt = parseFloat(tx.amount)||0;
-        if(tx.type==='in') b[key] += amt;
-        else b[key] -= amt;
-      });
-      shopBals = b;
+    if (d && d.success && d.bal) {
+      shopBals = d.bal;
       renderMain();
     }
   } catch(e) {}
