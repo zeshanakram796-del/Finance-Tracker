@@ -498,30 +498,11 @@ function getShopTotal() {
 }
 async function fetchShopBalances() {
   try {
+    // FT Sheet is master — always read from here
     const r = await fetch(API_URL + '?action=getShopBalance');
     const d = await r.json();
     if (d && d.success && d.bal) {
-      const b = d.bal;
-      const tot = (b.cash||0)+(b.jazz||0)+(b.easy||0)+(b.bank||0);
-      if (tot > 0) {
-        shopBals = b;
-      } else {
-        // FT Sheet is empty — try CM's Sheet as fallback
-        try {
-          const r2 = await fetch(CM_API + '?action=getShopBalance');
-          const d2 = await r2.json();
-          if (d2 && d2.success && d2.bal) {
-            const b2 = d2.bal;
-            const tot2 = (b2.cash||0)+(b2.jazz||0)+(b2.easy||0)+(b2.bank||0);
-            if (tot2 > 0) {
-              shopBals = b2;
-              // write it back to FT Sheet so both are in sync
-              const p = {cash:b2.cash,jazz:b2.jazz,easy:b2.easy,bank:b2.bank};
-              apiPost('saveShopBalance', p).catch(()=>{});
-            }
-          }
-        } catch(e2) {}
-      }
+      shopBals = d.bal;
       const hero = document.querySelector('.balance-hero');
       if (hero) renderMain();
     }
@@ -531,10 +512,8 @@ let _persistTimer = null;
 function persistShopBals() {
   clearTimeout(_persistTimer);
   _persistTimer = setTimeout(() => {
-    const p = {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank};
-    apiPost('saveShopBalance', p).catch(()=>{});
-    // also sync to CM Sheet so both apps stay in step
-    fetch(CM_API, {method:'POST', body: new URLSearchParams({action:'saveShopBalance',...p})}).catch(()=>{});
+    // Single source of truth: FT Sheet is master — write here only
+    apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank}).catch(()=>{});
   }, 1500);
 }
 function deductFromWallet(wallet, amount, desc) {
@@ -581,10 +560,8 @@ function saveShopWallets() {
     const el = document.getElementById('sw-'+k);
     if(el) shopBals[k] = parseFloat(el.value)||0;
   });
-  const p = {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank};
-  apiPost('saveShopBalance', p).catch(()=>{});
-  fetch(CM_API, {method:'POST', body: new URLSearchParams({action:'saveShopBalance',...p})}).catch(()=>{});
-  toast('Shop balances saved to both Sheets ✅');
+  apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank}).catch(()=>{});
+  toast('Shop balances saved ✅');
   renderMain();
 }
 
