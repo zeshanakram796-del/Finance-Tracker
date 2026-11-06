@@ -502,17 +502,24 @@ async function fetchShopBalances() {
     const d = await r.json();
     if (d && d.success && d.bal) {
       shopBals = d.bal;
-      renderMain();
+      // only re-render balance hero, not whole page
+      const hero = document.querySelector('.balance-hero');
+      if (hero) renderMain(); // safe — no fetch triggered inside renderMain
     }
   } catch(e) {}
+}
+function persistShopBals() {
+  apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank}).catch(()=>{});
 }
 function deductFromWallet(wallet, amount, desc) {
   const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
   shopBals[key] = (shopBals[key]||0) - amount;
+  persistShopBals();
 }
 function addToWallet(wallet, amount, desc) {
   const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
   shopBals[key] = (shopBals[key]||0) + amount;
+  persistShopBals();
 }
 function netBalance() {
   const totalIncome  = incomes.reduce((s,e)=>s+e.amount,0);
