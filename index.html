@@ -1598,6 +1598,13 @@ window.addEventListener('online', ()=>{isOnline=true;toast('Back online — sync
 window.addEventListener('offline',()=>{isOnline=false;toast('Offline — saved locally');updateSyncStatus();});
 setInterval(checkMidnight,60000);
 
+// Refresh shop balance when user switches back to Finance Tracker from CM
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible') fetchShopBalances();
+});
+// Also poll every 30s while app is open (catches cross-device updates)
+setInterval(()=>{ if(document.visibilityState==='visible') fetchShopBalances(); },30000);
+
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('/Finance-Tracker/sw.js')
