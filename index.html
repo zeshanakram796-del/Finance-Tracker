@@ -497,7 +497,8 @@ function getShopTotal() {
   return (shopBals.cash||0)+(shopBals.jazz||0)+(shopBals.easy||0)+(shopBals.bank||0);
 }
 let _persistTimer = null;
-let _balanceDirty = false; // true = local is ahead of Sheet, block incoming reads
+let _persistRetry = 0;
+let _balanceDirty = false;
 async function fetchShopBalances() {
   if(_balanceDirty) return; // local has unsaved changes — skip overwrite
   try {
@@ -510,21 +511,27 @@ async function fetchShopBalances() {
       if(hero) renderMain();
     }
   } catch(e) {
-    // Offline fallback
     try { const c=localStorage.getItem('ft_shop_bal'); if(c) shopBals=JSON.parse(c); } catch(e2){}
   }
 }
 function persistShopBals() {
-  _balanceDirty = true; // local changed — block Sheet reads until push succeeds
+  _balanceDirty = true;
   localStorage.setItem('ft_shop_bal', JSON.stringify(shopBals));
   clearTimeout(_persistTimer);
-  _persistTimer = setTimeout(async () => {
-    try {
-      await apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank});
-      _balanceDirty = false; // push confirmed
-    } catch(e) {}
-    _persistTimer = null;
-  }, 1500);
+  _persistRetry = 0;
+  _doPersist();
+}
+async function _doPersist() {
+  try {
+    await apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank});
+    _balanceDirty = false;
+    _persistRetry = 0;
+  } catch(e) {
+    if(_persistRetry < 3) {
+      _persistRetry++;
+      _persistTimer = setTimeout(_doPersist, _persistRetry * 3000); // retry: 3s, 6s, 9s
+    }
+  }
 }
 function deductFromWallet(wallet, amount, desc) {
   const key = wallet==='jazz'?'jazz':wallet==='easy'?'easy':wallet==='bank'?'bank':'cash';
