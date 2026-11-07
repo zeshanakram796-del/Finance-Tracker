@@ -496,31 +496,34 @@ function getShopBalances() { return shopBals; }
 function getShopTotal() {
   return (shopBals.cash||0)+(shopBals.jazz||0)+(shopBals.easy||0)+(shopBals.bank||0);
 }
+let _persistTimer = null;
+let _balanceDirty = false; // true = local is ahead of Sheet, block incoming reads
 async function fetchShopBalances() {
+  if(_balanceDirty) return; // local has unsaved changes — skip overwrite
   try {
-    // Online: always read from Sheet (master)
     const r = await fetch(API_URL + '?action=getShopBalance');
     const d = await r.json();
     if(d && d.success && d.bal) {
       shopBals = {cash:d.bal.cash||0,jazz:d.bal.jazz||0,easy:d.bal.easy||0,bank:d.bal.bank||0};
-      localStorage.setItem('ft_shop_bal', JSON.stringify(shopBals)); // cache for offline
+      localStorage.setItem('ft_shop_bal', JSON.stringify(shopBals));
       const hero = document.querySelector('.balance-hero');
       if(hero) renderMain();
     }
   } catch(e) {
-    // Offline fallback: use last cached value
-    try {
-      const cached = localStorage.getItem('ft_shop_bal');
-      if(cached) shopBals = JSON.parse(cached);
-    } catch(e2) {}
+    // Offline fallback
+    try { const c=localStorage.getItem('ft_shop_bal'); if(c) shopBals=JSON.parse(c); } catch(e2){}
   }
 }
-let _persistTimer = null;
 function persistShopBals() {
-  localStorage.setItem('ft_shop_bal', JSON.stringify(shopBals)); // cache locally
+  _balanceDirty = true; // local changed — block Sheet reads until push succeeds
+  localStorage.setItem('ft_shop_bal', JSON.stringify(shopBals));
   clearTimeout(_persistTimer);
-  _persistTimer = setTimeout(() => {
-    apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank}).catch(()=>{});
+  _persistTimer = setTimeout(async () => {
+    try {
+      await apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank});
+      _balanceDirty = false; // push confirmed
+    } catch(e) {}
+    _persistTimer = null;
   }, 1500);
 }
 function deductFromWallet(wallet, amount, desc) {
