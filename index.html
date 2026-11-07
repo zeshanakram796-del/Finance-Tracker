@@ -496,51 +496,28 @@ function getShopBalances() { return shopBals; }
 function getShopTotal() {
   return (shopBals.cash||0)+(shopBals.jazz||0)+(shopBals.easy||0)+(shopBals.bank||0);
 }
-// ── Shared balance helpers (same-origin localStorage, shared with CM) ──────────
-function writeSharedBal(b) {
-  try { localStorage.setItem('shared_shop_bal', JSON.stringify({cash:b.cash||0,jazz:b.jazz||0,easy:b.easy||0,bank:b.bank||0,ts:Date.now()})); } catch(e){}
-}
-function readSharedBal() {
-  try { const s=localStorage.getItem('shared_shop_bal'); return s?JSON.parse(s):null; } catch(e){ return null; }
-}
-// Listen for balance updates from CM (same device, other tab)
-window.addEventListener('storage', e => {
-  if(e.key!=='shared_shop_bal'||!e.newValue) return;
-  try {
-    const b=JSON.parse(e.newValue);
-    shopBals={cash:b.cash||0,jazz:b.jazz||0,easy:b.easy||0,bank:b.bank||0};
-    const hero=document.querySelector('.balance-hero');
-    if(hero) renderMain();
-  } catch(err){}
-});
-
 async function fetchShopBalances() {
-  // 1. Instant display from shared localStorage (same device)
-  const loc = readSharedBal();
-  if(loc && (loc.cash||0)+(loc.jazz||0)+(loc.easy||0)+(loc.bank||0) > 0) {
-    shopBals = {cash:loc.cash||0,jazz:loc.jazz||0,easy:loc.easy||0,bank:loc.bank||0};
-    const hero = document.querySelector('.balance-hero');
-    if(hero) renderMain();
-  }
-  // 2. Always fetch Sheet (cross-device updates)
   try {
+    // Online: always read from Sheet (master)
     const r = await fetch(API_URL + '?action=getShopBalance');
     const d = await r.json();
     if(d && d.success && d.bal) {
-      const b = d.bal;
-      const tot = (b.cash||0)+(b.jazz||0)+(b.easy||0)+(b.bank||0);
-      if(tot > 0) {
-        shopBals = {cash:b.cash||0,jazz:b.jazz||0,easy:b.easy||0,bank:b.bank||0};
-        writeSharedBal(shopBals); // keep shared localStorage in sync
-        const hero = document.querySelector('.balance-hero');
-        if(hero) renderMain();
-      }
+      shopBals = {cash:d.bal.cash||0,jazz:d.bal.jazz||0,easy:d.bal.easy||0,bank:d.bal.bank||0};
+      localStorage.setItem('ft_shop_bal', JSON.stringify(shopBals)); // cache for offline
+      const hero = document.querySelector('.balance-hero');
+      if(hero) renderMain();
     }
-  } catch(e) {}
+  } catch(e) {
+    // Offline fallback: use last cached value
+    try {
+      const cached = localStorage.getItem('ft_shop_bal');
+      if(cached) shopBals = JSON.parse(cached);
+    } catch(e2) {}
+  }
 }
 let _persistTimer = null;
 function persistShopBals() {
-  writeSharedBal(shopBals); // instant same-device sync
+  localStorage.setItem('ft_shop_bal', JSON.stringify(shopBals)); // cache locally
   clearTimeout(_persistTimer);
   _persistTimer = setTimeout(() => {
     apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank}).catch(()=>{});
@@ -590,7 +567,7 @@ function saveShopWallets() {
     const el = document.getElementById('sw-'+k);
     if(el) shopBals[k] = parseFloat(el.value)||0;
   });
-  writeSharedBal(shopBals);
+  localStorage.setItem('ft_shop_bal', JSON.stringify(shopBals));
   apiPost('saveShopBalance', {cash:shopBals.cash,jazz:shopBals.jazz,easy:shopBals.easy,bank:shopBals.bank}).catch(()=>{});
   toast('Shop balances saved ✅');
   renderMain();
